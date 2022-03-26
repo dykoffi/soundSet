@@ -33,7 +33,7 @@ export default function Recorder() {
                 state={recordState}
                 onStop={onStop}
                 canvasHeight={120}
-                canvasWidth={400}
+                canvasWidth={350}
             />
         </div>
     )

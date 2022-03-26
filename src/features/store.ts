@@ -1,10 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterSlice from './counter/counterSlice'
 import audioSlice from './counter/audioSlice'
 
 export const store = configureStore({
     reducer: {
-        counter: counterSlice,
         audio: audioSlice
     }
 })

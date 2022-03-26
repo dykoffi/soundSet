@@ -14,6 +14,12 @@ export default function Lecture() {
     const isRecording = useSelector((state: RootState) => state.audio.isRecording)
     const dispatch = useDispatch()
 
+    const startRecording = () => {
+        setTimeout(() => {
+            dispatch(startRecord())
+        }, 300);
+    }
+
     return (
         <div className="w-screen min-h-screen bg-gray-900 flex flex-col justify-center items-center">
             <div className="w-screen flex p-3">
@@ -33,7 +39,7 @@ export default function Lecture() {
                     </h1>
                 </div>
                 <div id="bci_text">
-                    <h1 className="text-gray-300 font-bold text-5xl">
+                    <h1 className="text-gray-300 font-bold text-4xl md:text-5xl">
                         And if tomorrow is Sunday and today is not Saturday
                     </h1>
                 </div>
@@ -45,7 +51,7 @@ export default function Lecture() {
                             {
                                 dataAudio ?
                                     <audio id="audio" controls src={urlAudio} /> :
-                                    <MicrophoneIcon onClick={() => dispatch(startRecord())} className="h-32 cursor-pointer text-green-600 opacity-40" />
+                                    <MicrophoneIcon onClick={startRecording} className="h-32 cursor-pointer text-green-600 opacity-40" />
 
                             }
                         </>
@@ -55,17 +61,17 @@ export default function Lecture() {
                 </div>
                 <div id="menu_after_recording" className="flex justify-center items-center space-x-5">
                     {isRecording ?
-                        <StopIcon onClick={() => dispatch(stopRecord())} className="h-10 text-red-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+                        <StopIcon onClick={() => dispatch(stopRecord())} className="h-14 text-red-600 animate-pulse cursor-pointer" />
                         :
                         <>
                             {
                                 dataAudio &&
                                 <>
-                                    <RefreshIcon onClick={() => dispatch(startRecord())} className="h-10 text-gray-200 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+                                    <RefreshIcon onClick={startRecording} className="h-10 text-gray-200 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
                                     <SaveAsIcon className="h-10 text-green-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
-                                    <FastForwardIcon className="h-10 text-red-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
                                 </>
                             }
+                            <FastForwardIcon className="h-10 text-red-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
                         </>
                     }
 
