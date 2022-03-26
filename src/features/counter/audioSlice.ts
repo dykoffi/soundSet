@@ -5,7 +5,8 @@ export const audioSlice = createSlice({
     initialState: {
         isRecording: false,
         recordState: null,
-        dataAudio: null
+        dataAudio: null,
+        urlAudio: ""
     },
     reducers: {
         startRecord: (state) => {
@@ -17,6 +18,7 @@ export const audioSlice = createSlice({
         },
         setDataAudio: (state, action) => {
             state.dataAudio = action.payload
+            state.urlAudio = action.payload.url
         },
         setRecordState: (state, action) => {
             state.recordState = action.payload
