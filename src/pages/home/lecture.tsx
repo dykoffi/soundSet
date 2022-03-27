@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import { FastForwardIcon, PauseIcon, PlayIcon, RefreshIcon, StopIcon, UserCircleIcon } from "@heroicons/react/solid"
+import { FastForwardIcon, RefreshIcon, StopIcon, UserCircleIcon } from "@heroicons/react/solid"
 import { MicrophoneIcon, SaveAsIcon } from "@heroicons/react/outline";
 import Recorder from "../../features/useRecorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import { startRecord, stopRecord } from "../../features/counter/audioSlice";
+import { Menu } from "@headlessui/react";
+import { COOKIES } from "../../config/constants";
 
 export default function Lecture() {
+
+
+
+    const data = COOKIES.get("userinfo")
 
     const dataAudio = useSelector((state: RootState) => state.audio.dataAudio)
     const urlAudio = useSelector((state: RootState) => state.audio.urlAudio)
@@ -15,9 +21,7 @@ export default function Lecture() {
     const dispatch = useDispatch()
 
     const startRecording = () => {
-        setTimeout(() => {
-            dispatch(startRecord())
-        }, 300);
+        dispatch(startRecord())
     }
 
     return (
@@ -27,7 +31,7 @@ export default function Lecture() {
                     12
                 </span>
                 <div className="flex-1 flex justify-end items-center mx-3 space-x-3">
-                    <span className="text-gray-200 font-light text-sm">KOFFI Edy, 22 ans (M)</span>
+                    <span className="text-gray-200 font-light text-sm">{data.nom}, {data.age} ans ({data.sexe})</span>
                     <UserCircleIcon className="h-12 text-gray-300 opacity-60" />
                 </div>
             </div>
@@ -39,7 +43,7 @@ export default function Lecture() {
                     </h1>
                 </div>
                 <div id="bci_text">
-                    <h1 className="text-gray-300 font-bold text-4xl md:text-5xl">
+                    <h1 className="text-gray-300 font-bold px-3 text-4xl md:text-5xl">
                         And if tomorrow is Sunday and today is not Saturday
                     </h1>
                 </div>
