@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit'
-import audioSlice from './counter/audioSlice'
+import audioSlice from './audio/audioSlice'
 
 export const store = configureStore({
     reducer: {

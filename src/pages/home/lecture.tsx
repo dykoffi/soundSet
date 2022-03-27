@@ -5,13 +5,10 @@ import { MicrophoneIcon, SaveAsIcon } from "@heroicons/react/outline";
 import Recorder from "../../features/useRecorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
-import { startRecord, stopRecord } from "../../features/counter/audioSlice";
-import { Menu } from "@headlessui/react";
+import { startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
 
 export default function Lecture() {
-
-
 
     const data = COOKIES.get("userinfo")
 
@@ -31,8 +28,11 @@ export default function Lecture() {
                     12
                 </span>
                 <div className="flex-1 flex justify-end items-center mx-3 space-x-3">
-                    <span className="text-gray-200 font-light text-sm">{data.nom}, {data.age} ans ({data.sexe})</span>
-                    <UserCircleIcon className="h-12 text-gray-300 opacity-60" />
+                    {data && <>
+                        <span className="text-gray-200 font-light text-sm">{data.nom}, {data.age} ans ({data.sexe})</span>
+                        <UserCircleIcon className="h-12 text-gray-300 opacity-60" />
+                    </>
+                    }
                 </div>
             </div>
             <div className="text-center flex-1 space-y-5 flex flex-col justify-center">
@@ -78,8 +78,6 @@ export default function Lecture() {
                             <FastForwardIcon className="h-10 text-red-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
                         </>
                     }
-
-
                 </div>
             </div>
         </div>
