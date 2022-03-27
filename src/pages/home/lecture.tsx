@@ -1,11 +1,11 @@
 import React from "react";
 
-import { FastForwardIcon, RefreshIcon, StopIcon, UserCircleIcon } from "@heroicons/react/solid"
-import { MicrophoneIcon, SaveAsIcon } from "@heroicons/react/outline";
+import { FastForwardIcon, StopIcon, UserCircleIcon } from "@heroicons/react/solid"
+import { MicrophoneIcon, RefreshIcon } from "@heroicons/react/outline";
 import Recorder from "../../features/useRecorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
-import { startRecord, stopRecord } from "../../features/audio/audioSlice";
+import { sendAudio, startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
 
 export default function Lecture() {
@@ -19,6 +19,12 @@ export default function Lecture() {
 
     const startRecording = () => {
         dispatch(startRecord())
+    }
+
+    const sendAudioData = () => {
+        if (dataAudio) {
+            dispatch(sendAudio(dataAudio.blob))
+        }
     }
 
     return (
@@ -55,7 +61,10 @@ export default function Lecture() {
                             {
                                 dataAudio ?
                                     <audio id="audio" controls src={urlAudio} /> :
-                                    <MicrophoneIcon onClick={startRecording} className="h-32 cursor-pointer text-green-600 opacity-40" />
+                                    <div className="flex flex-col">
+                                        <MicrophoneIcon onClick={startRecording} className="h-32 cursor-pointer text-green-600 opacity-40" />
+                                        <small className="text-white">Appuyer le micro pour enregistrer</small>
+                                    </div>
 
                             }
                         </>
@@ -65,17 +74,23 @@ export default function Lecture() {
                 </div>
                 <div id="menu_after_recording" className="flex justify-center items-center space-x-5">
                     {isRecording ?
-                        <StopIcon onClick={() => dispatch(stopRecord())} className="h-14 text-red-600 animate-pulse cursor-pointer" />
+                        <>
+                            <StopIcon onClick={() => dispatch(stopRecord())} className="h-14 text-red-600 animate-pulse cursor-pointer" />
+                        </>
                         :
                         <>
                             {
                                 dataAudio &&
                                 <>
-                                    <RefreshIcon onClick={startRecording} className="h-10 text-gray-200 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
-                                    <SaveAsIcon className="h-10 text-green-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+                                    <button onClick={startRecording} className="p-3 text-white rounded-md bg-blue-900 hover:opacity-90 transition-opacity">
+                                        <RefreshIcon className="h-5" />
+                                    </button>
+                                    <button onClick={sendAudioData} className="p-3 text-white rounded-md bg-green-600 hover:opacity-90 transition-opacity">
+                                        Enregistrer
+                                    </button>
                                 </>
                             }
-                            <FastForwardIcon className="h-10 text-red-600 opacity-60 hover:opacity-100 transition-opacity cursor-pointer" />
+                            <button className="p-3 text-white rounded-md bg-red-800 hover:opacity-90 transition-opacity">Passer <FastForwardIcon className="h-5 inline" /></button>
                         </>
                     }
                 </div>

@@ -3,7 +3,7 @@ import {Cookies} from "react-cookie";
 export const TIME_OUT_API = 7000;
 export const TOKEN = "";
 // export const API_URL = "https://colibri-test.herokuapp.com/api";
-export const API_URL = "http://localhost/8080";
+export const API_URL = "http://localhost:8080";
 export const COOKIES = new Cookies();
 
 export enum HttpStatusCodes {
