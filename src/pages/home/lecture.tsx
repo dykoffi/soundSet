@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { FastForwardIcon, StopIcon, UserCircleIcon } from "@heroicons/react/solid"
 import { MicrophoneIcon, RefreshIcon } from "@heroicons/react/outline";
@@ -7,11 +7,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import { sendAudio, startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
+import { setUser } from "../../features/user/userSlice";
 
 export default function Lecture() {
-
-    const data = COOKIES.get("userinfo")
-
+    
+    const data = useSelector((state: RootState) => state.user.user)
     const dataAudio = useSelector((state: RootState) => state.audio.dataAudio)
     const urlAudio = useSelector((state: RootState) => state.audio.urlAudio)
     const isRecording = useSelector((state: RootState) => state.audio.isRecording)
@@ -27,6 +27,10 @@ export default function Lecture() {
         }
     }
 
+    useEffect(()=>{
+       dispatch(setUser(COOKIES.get("userinfo_audioset")))
+    }, [data])
+
     return (
         <div className="w-screen min-h-screen bg-gray-900 flex flex-col justify-center items-center">
             <div className="w-screen flex p-3">
@@ -35,7 +39,7 @@ export default function Lecture() {
                 </span>
                 <div className="flex-1 flex justify-end items-center mx-3 space-x-3">
                     {data && <>
-                        <span className="text-gray-200 font-light text-sm">{data.nom}, {data.age} ans ({data.sexe})</span>
+                        <span className="text-gray-200 font-light text-sm">{data.name}, {data.year} ans ({data.genre})</span>
                         <UserCircleIcon className="h-12 text-gray-300 opacity-60" />
                     </>
                     }
