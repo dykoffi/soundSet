@@ -3,13 +3,19 @@ import { ApiClient } from '../../config/axios'
 
 interface State {
     isRecording: boolean,
-    recordState: any,
+    recordState: any
     dataAudio: {
-        blob: Blob,
-        type: string,
+        blob: Blob
+        type: string
         url: string
-    } | null,
-    urlAudio: string,
+    } | null
+    urlAudio: string
+    currentAudio: {
+        id_: number
+        ref: string
+        fr: string
+        bci: string
+    } | null
     userAudioCount: number
     notRecordedNb: number
 }
@@ -20,7 +26,8 @@ let initialState: State = {
     dataAudio: null,
     urlAudio: "",
     notRecordedNb: 0,
-    userAudioCount: 0
+    userAudioCount: 0,
+    currentAudio: null
 }
 
 export const audioSlice = createSlice({
@@ -38,7 +45,7 @@ export const audioSlice = createSlice({
             console.log(action.payload);
 
             state.dataAudio = action.payload
-            state.urlAudio = action.payload.url
+            state.urlAudio = action.payload ? action.payload.url : null
         },
         setRecordState: (state, action) => {
             state.recordState = action.payload
@@ -48,24 +55,33 @@ export const audioSlice = createSlice({
         },
         setUserAudioCount: (state, action) => {
             state.userAudioCount = action.payload
+        },
+        setCurrentAudio: (state, action) => {
+            state.currentAudio = action.payload
         }
     }
 })
 
+interface sentAudio {
+    blob: Blob
+    audioId: string
+    ref: string
+}
+
 export const sendAudio = createAsyncThunk('audio/send',
-    async (data: Blob) => {
+    async (data: sentAudio, { dispatch }) => {
         // let { } = getState()
 
         var formData = new FormData();
-        formData.append("audio", data)
+        formData.append("audio", data.blob, data.ref)
+        formData.append("soundId", data.audioId)
 
         ApiClient.post("/sound/send", formData, {
             headers: {
                 "Content-type": "multipart/form-data"
             }
-        }).then(data => {
-            console.log(data);
-
+        }).then(async ({ data }) => {
+            dispatch(getNewAudio(data.UserId_))
         }).catch(err => {
             console.log(err);
 
@@ -92,5 +108,14 @@ export const getUserRecorded = createAsyncThunk('audio/getUserRecorded',
         })
     })
 
-export const { startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount } = audioSlice.actions
+export const getNewAudio = createAsyncThunk('audio/getNewAudio',
+    async (userId: number, { dispatch }) => {
+        ApiClient.get(`/sound/begin/${userId}`).then(({ data }) => {
+            dispatch(setCurrentAudio(data))
+        }).catch(err => {
+            console.log(err);
+        })
+    })
+
+export const { startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer

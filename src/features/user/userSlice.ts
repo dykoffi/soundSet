@@ -4,7 +4,7 @@ import { COOKIES } from '../../config/constants'
 
 interface User {
     user: {
-        id: number
+        id_: number
         name: string
         year: number
         token: string

@@ -5,7 +5,7 @@ import { LogoutIcon, MicrophoneIcon, RefreshIcon } from "@heroicons/react/outlin
 import Recorder from "../../features/useRecorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
-import { getNotRecordedNb, getUserRecorded, sendAudio, startRecord, stopRecord } from "../../features/audio/audioSlice";
+import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setDataAudio, startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
 import { logoutUser, setLogged, setUser } from "../../features/user/userSlice";
 import { useNavigate } from "react-router";
@@ -17,6 +17,7 @@ export default function Lecture() {
     const userAudioCount = useSelector((state: RootState) => state.audio.userAudioCount)
     const dataAudio = useSelector((state: RootState) => state.audio.dataAudio)
     const urlAudio = useSelector((state: RootState) => state.audio.urlAudio)
+    const currentAudio = useSelector((state: RootState) => state.audio.currentAudio)
     const isRecording = useSelector((state: RootState) => state.audio.isRecording)
     const dispatch = useDispatch()
 
@@ -28,9 +29,18 @@ export default function Lecture() {
         dispatch(startRecord())
     }
 
+    const newAudio = () => {
+        if (data) {
+            dispatch(getNewAudio(data.id_))
+            dispatch(setDataAudio(null))
+        }
+
+    }
+
     const sendAudioData = () => {
-        if (dataAudio) {
-            dispatch(sendAudio(dataAudio.blob))
+        if (dataAudio && currentAudio) {
+            dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref) }))
+            dispatch(setDataAudio(null))
         }
     }
 
@@ -43,6 +53,12 @@ export default function Lecture() {
             navigate("/")
         }
     }, [logged])
+
+    useEffect(() => {
+        if (data) {
+            dispatch(getNewAudio(data.id_))
+        }
+    }, [data])
 
 
     useEffect(() => {
@@ -69,59 +85,61 @@ export default function Lecture() {
                     }
                 </div>
             </div>
-            <div className="text-center flex-1 space-y-5 flex flex-col justify-center">
+            <div className="w-screen text-center flex-1 space-y-5 flex flex-col justify-center">
                 <hr className="w-24 mx-auto border-green-700" />
                 <div id="fr_text">
-                    <h1 className="text-green-500 font-bold text-2xl">
-                        Et si demain est dimanche  et que aujourd'hui n'est pas samedi
-                    </h1>
+                    {currentAudio && <h1 className="text-green-500 font-bold text-xl">
+                        {currentAudio.fr}
+                    </h1>}
                 </div>
                 <div id="bci_text">
-                    <h1 className="text-gray-300 font-bold px-3 text-4xl md:text-5xl">
-                        And if tomorrow is Sunday and today is not Saturday
-                    </h1>
+                    {currentAudio && <h1 className="text-gray-300 font-bold px-3 text-2xl md:text-3xl">
+                        {currentAudio.bci}
+                    </h1>}
                 </div>
-                <div id="button_record" className="flex justify-center items-center py-10">
-                    {!isRecording
-                        &&
 
-                        <>
-                            {
-                                dataAudio ?
-                                    <audio id="audio" controls src={urlAudio} /> :
-                                    <div className="flex flex-col">
-                                        <MicrophoneIcon onClick={startRecording} className="h-32 cursor-pointer text-green-600 opacity-40" />
-                                        <small className="text-white">Appuyer le micro pour enregistrer</small>
-                                    </div>
 
-                            }
-                        </>
-                    }
+            </div>
+            <div id="button_record" className="flex justify-center items-center py-5">
+                {!isRecording
+                    &&
 
-                    <Recorder />
-                </div>
-                <div id="menu_after_recording" className="flex justify-center items-center space-x-5">
-                    {isRecording ?
-                        <>
-                            <StopIcon onClick={() => dispatch(stopRecord())} className="h-14 text-red-600 animate-pulse cursor-pointer" />
-                        </>
-                        :
-                        <>
-                            {
-                                dataAudio &&
-                                <>
-                                    <button onClick={startRecording} className="p-3 text-white rounded-md bg-blue-900 hover:opacity-90 transition-opacity">
-                                        <RefreshIcon className="h-5" />
-                                    </button>
-                                    <button onClick={sendAudioData} className="p-3 text-white rounded-md bg-green-600 hover:opacity-90 transition-opacity">
-                                        Envoyer
-                                    </button>
-                                </>
-                            }
-                            <button className="p-3 text-white rounded-md bg-red-800 hover:opacity-90 transition-opacity">Passer <FastForwardIcon className="h-5 inline" /></button>
-                        </>
-                    }
-                </div>
+                    <>
+                        {
+                            dataAudio ?
+                                <audio id="audio" controls src={urlAudio} /> :
+                                <div className="flex flex-col">
+                                    <MicrophoneIcon onClick={startRecording} className="h-24 cursor-pointer text-green-600 opacity-40" />
+                                    <small className="text-white">Appuyer le micro pour enregistrer</small>
+                                </div>
+
+                        }
+                    </>
+                }
+
+                <Recorder />
+            </div>
+            <div id="menu_after_recording" className="flex justify-center items-center space-x-5 p-3">
+                {isRecording ?
+                    <>
+                        <StopIcon onClick={() => dispatch(stopRecord())} className="h-14 text-red-600 animate-pulse cursor-pointer" />
+                    </>
+                    :
+                    <>
+                        {
+                            dataAudio &&
+                            <>
+                                <button onClick={startRecording} className="p-3 text-white rounded-md bg-blue-900 hover:opacity-90 transition-opacity">
+                                    <RefreshIcon className="h-5" />
+                                </button>
+                                <button onClick={sendAudioData} className="p-3 text-white rounded-md bg-green-600 hover:opacity-90 transition-opacity">
+                                    Envoyer
+                                </button>
+                            </>
+                        }
+                        <button onClick={newAudio} className="p-3 text-white rounded-md bg-red-800 hover:opacity-90 transition-opacity">Passer <FastForwardIcon className="h-5 inline" /></button>
+                    </>
+                }
             </div>
         </div>
     )
