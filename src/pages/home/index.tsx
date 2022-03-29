@@ -1,9 +1,10 @@
 import { ArrowRightIcon } from "@heroicons/react/solid";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { COOKIES } from "../../config/constants";
-import { loginUser } from "../../features/user/userSlice";
+import { loginUser, setLogged } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../features/store";
 
 export default function Index() {
 
@@ -13,14 +14,22 @@ export default function Index() {
     genre: COOKIES.get("userinfo_audioset") ? COOKIES.get("userinfo_audioset").genre : "M"
   })
 
+  const logged = useSelector((state: RootState) => state.user.logged)
+
+
   const dispatch = useDispatch()
 
   let navigate = useNavigate()
 
   const saveInfoUser = () => {
     dispatch(loginUser(data))
-    navigate("/lecture")
   }
+
+  useEffect(() => {
+    if (logged) {
+      navigate("/lecture")
+    }
+  }, [logged])
 
   return (
     <div id="home" className="w-screen min-h-screen flex-col flex md:flex-row">
