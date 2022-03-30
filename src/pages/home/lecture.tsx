@@ -39,8 +39,8 @@ export default function Lecture() {
     }
 
     const sendAudioData = () => {
-        if (dataAudio && currentAudio) {
-            dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref) }))
+        if (data && dataAudio && currentAudio) {
+            dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId : String(data.id_) }))
             dispatch(setDataAudio(null))
         }
     }

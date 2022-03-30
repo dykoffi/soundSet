@@ -70,25 +70,31 @@ export const audioSlice = createSlice({
 interface sentAudio {
     blob: Blob
     audioId: string
+    userId: string
     ref: string
 }
 
 export const sendAudio = createAsyncThunk('audio/send',
     async (data: sentAudio, { dispatch }) => {
         // let { } = getState()
+        dispatch(setLoading(true))
 
         var formData = new FormData();
         formData.append("audio", data.blob, data.ref);
         formData.append("soundId", data.audioId);
+        formData.append("userId", data.userId);
 
-        dispatch(setLoading(true))
 
         ApiClient.post("/sound/send", formData, {
             headers: {
                 "Content-type": "multipart/form-data"
             }
-        }).then(async ({ data }) => {
-            dispatch(getNewAudio(data.UserId_))
+        }).then(async ({ data: res }) => {
+            dispatch(setCurrentAudio(res))
+            dispatch(getUserRecorded(Number(data.userId)))
+            dispatch(getNotRecordedNb())
+            dispatch(setLoading(false))
+
         }).catch(err => {
             console.log(err);
         })
@@ -120,11 +126,9 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         dispatch(setLoading(true))
         ApiClient.get(`/sound/begin/${userId}`).then(({ data }) => {
             dispatch(setCurrentAudio(data))
-            dispatch(getUserRecorded(data.id_))
+            dispatch(getUserRecorded(userId))
             dispatch(getNotRecordedNb())
             dispatch(setLoading(false))
-            console.log(data);
-            
         }).catch(err => {
             console.log(err);
         })
