@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ApiClient } from '../../config/axios'
 
 interface State {
+    loading: false
     isRecording: boolean,
     recordState: any
     dataAudio: {
@@ -21,6 +22,7 @@ interface State {
 }
 
 let initialState: State = {
+    loading: false,
     isRecording: false,
     recordState: null,
     dataAudio: null,
@@ -58,6 +60,9 @@ export const audioSlice = createSlice({
         },
         setCurrentAudio: (state, action) => {
             state.currentAudio = action.payload
+        },
+        setLoading: (state, action) => {
+            state.loading = action.payload
         }
     }
 })
@@ -73,8 +78,10 @@ export const sendAudio = createAsyncThunk('audio/send',
         // let { } = getState()
 
         var formData = new FormData();
-        formData.append("audio", data.blob, data.ref)
-        formData.append("soundId", data.audioId)
+        formData.append("audio", data.blob, data.ref);
+        formData.append("soundId", data.audioId);
+
+        dispatch(setLoading(true))
 
         ApiClient.post("/sound/send", formData, {
             headers: {
@@ -84,7 +91,6 @@ export const sendAudio = createAsyncThunk('audio/send',
             dispatch(getNewAudio(data.UserId_))
         }).catch(err => {
             console.log(err);
-
         })
     })
 
@@ -92,6 +98,7 @@ export const sendAudio = createAsyncThunk('audio/send',
 export const getNotRecordedNb = createAsyncThunk('audio/getNotRecorded',
     async (data: undefined, { dispatch }) => {
 
+        dispatch(setLoading(true))
         ApiClient.get("/sound/count/unrecorded").then(({ data }) => {
             dispatch(setNotRecordedNb(data))
         }).catch(err => {
@@ -110,12 +117,16 @@ export const getUserRecorded = createAsyncThunk('audio/getUserRecorded',
 
 export const getNewAudio = createAsyncThunk('audio/getNewAudio',
     async (userId: number, { dispatch }) => {
+        dispatch(setLoading(true))
         ApiClient.get(`/sound/begin/${userId}`).then(({ data }) => {
             dispatch(setCurrentAudio(data))
+            dispatch(getUserRecorded(data.id_))
+            dispatch(getNotRecordedNb())
+            dispatch(setLoading(false))
         }).catch(err => {
             console.log(err);
         })
     })
 
-export const { startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
+export const { setLoading, startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer

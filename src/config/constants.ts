@@ -1,9 +1,9 @@
-import {Cookies} from "react-cookie";
+import { Cookies } from "react-cookie";
 
-export const TIME_OUT_API = 7000;
+export const TIME_OUT_API = 30000;
 export const TOKEN = "";
-// export const API_URL = "https://colibri-test.herokuapp.com/api";
-export const API_URL = "http://localhost:8080";
+// export const API_URL = "http://localhost:8080";
+export const API_URL = "http://elbsoundset-810963134.eu-west-3.elb.amazonaws.com/";
 export const COOKIES = new Cookies();
 
 export enum HttpStatusCodes {

@@ -5,6 +5,8 @@ import { COOKIES } from "../../config/constants";
 import { loginUser, setLogged } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
+import Loading from "../../components/loading";
+import { setLoading } from "../../features/audio/audioSlice";
 
 export default function Index() {
 
@@ -14,14 +16,16 @@ export default function Index() {
     genre: COOKIES.get("userinfo_audioset") ? COOKIES.get("userinfo_audioset").genre : "M"
   })
 
-  const logged = useSelector((state: RootState) => state.user.logged)
+  const loading = useSelector((state: RootState) => state.audio.loading)
 
+  const logged = useSelector((state: RootState) => state.user.logged)
 
   const dispatch = useDispatch()
 
   let navigate = useNavigate()
 
   const saveInfoUser = () => {
+    dispatch(setLoading(true))
     dispatch(loginUser(data))
   }
 
@@ -54,6 +58,7 @@ export default function Index() {
         </select>
         <button disabled={data.year <= 0} onClick={saveInfoUser} className={`p-3 text-white ${data.year <= 0 ? "bg-gray-500 cursor-default" : "bg-green-500"} rounded-md`} >Commencer</button>
       </div>
+      {loading && <Loading />}
     </div>
 
   );

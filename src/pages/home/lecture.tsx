@@ -5,16 +5,18 @@ import { LogoutIcon, MicrophoneIcon, RefreshIcon } from "@heroicons/react/outlin
 import Recorder from "../../features/useRecorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
-import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setDataAudio, startRecord, stopRecord } from "../../features/audio/audioSlice";
+import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setDataAudio, setLoading, startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
 import { logoutUser, setLogged, setUser } from "../../features/user/userSlice";
 import { useNavigate } from "react-router";
+import Loading from "../../components/loading";
 
 export default function Lecture() {
 
     const data = useSelector((state: RootState) => state.user.user)
     const notRecordedAudio = useSelector((state: RootState) => state.audio.notRecordedNb)
     const userAudioCount = useSelector((state: RootState) => state.audio.userAudioCount)
+    const loading = useSelector((state: RootState) => state.audio.loading)
     const dataAudio = useSelector((state: RootState) => state.audio.dataAudio)
     const urlAudio = useSelector((state: RootState) => state.audio.urlAudio)
     const currentAudio = useSelector((state: RootState) => state.audio.currentAudio)
@@ -34,7 +36,6 @@ export default function Lecture() {
             dispatch(getNewAudio(data.id_))
             dispatch(setDataAudio(null))
         }
-
     }
 
     const sendAudioData = () => {
@@ -141,6 +142,7 @@ export default function Lecture() {
                     </>
                 }
             </div>
+            {loading && <Loading />}
         </div>
     )
 }
