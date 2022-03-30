@@ -75,7 +75,7 @@ export default function Lecture() {
                     <span className="p-2 rounded-full bg-green-500 font-bold text-sm flex items-center">
                         {userAudioCount}
                     </span>
-                    <span>Il reste encore <b>{notRecordedAudio}</b> audio(s) à enregistrer</span>
+                    <span><b>{notRecordedAudio}</b> audio(s) à enregistrer</span>
                 </div>
                 <div className="flex-1 flex justify-end items-center mx-3 space-x-3">
                     {data && <>
