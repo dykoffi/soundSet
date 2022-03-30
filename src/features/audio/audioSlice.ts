@@ -123,6 +123,8 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
             dispatch(getUserRecorded(data.id_))
             dispatch(getNotRecordedNb())
             dispatch(setLoading(false))
+            console.log(data);
+            
         }).catch(err => {
             console.log(err);
         })

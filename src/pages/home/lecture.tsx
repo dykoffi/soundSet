@@ -49,6 +49,9 @@ export default function Lecture() {
     useEffect(() => {
         if (COOKIES.get("userinfo_audioset")) {
             dispatch(setLogged(true))
+            dispatch(setUser(COOKIES.get("userinfo_audioset")))
+            dispatch(getNotRecordedNb())
+            dispatch(getUserRecorded(COOKIES.get("userinfo_audioset").id_))
         }
         if (!logged) {
             navigate("/")
@@ -56,16 +59,7 @@ export default function Lecture() {
     }, [logged])
 
     useEffect(() => {
-        if (data) {
-            dispatch(getNewAudio(data.id_))
-        }
-    }, [data])
-
-
-    useEffect(() => {
-        dispatch(setUser(COOKIES.get("userinfo_audioset")))
-        dispatch(getNotRecordedNb())
-        dispatch(getUserRecorded(COOKIES.get("userinfo_audioset").id_))
+        newAudio()
     }, [])
 
     return (
@@ -75,7 +69,7 @@ export default function Lecture() {
                     <span className="p-2 rounded-full bg-green-500 font-bold text-sm flex items-center">
                         {userAudioCount}
                     </span>
-                    <span><b>{notRecordedAudio}</b> audio(s) à enregistrer</span>
+                    <span><b>{notRecordedAudio}</b> audio(s) restant(s)</span>
                 </div>
                 <div className="flex-1 flex justify-end items-center mx-3 space-x-3">
                     {data && <>
