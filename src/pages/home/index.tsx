@@ -2,7 +2,7 @@ import { ArrowRightIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { COOKIES } from "../../config/constants";
-import { loginUser, setLogged } from "../../features/user/userSlice";
+import { loginUser } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import Loading from "../../components/loading";

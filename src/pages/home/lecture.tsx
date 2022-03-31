@@ -53,15 +53,14 @@ export default function Lecture() {
             dispatch(setUser(COOKIES.get("userinfo_audioset")))
             dispatch(getNotRecordedNb())
             dispatch(getUserRecorded(COOKIES.get("userinfo_audioset").id_))
-        }
-        if (!logged) {
+        } else {
             navigate("/")
         }
     }, [logged])
 
     useEffect(() => {
         newAudio()
-    }, [])
+    }, [logged])
 
     return (
         <div className="w-screen min-h-screen bg-gray-900 flex flex-col justify-center items-center">
