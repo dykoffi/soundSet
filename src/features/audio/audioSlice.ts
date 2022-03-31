@@ -44,8 +44,6 @@ export const audioSlice = createSlice({
             state.isRecording = false
         },
         setDataAudio: (state, action) => {
-            console.log(action.payload);
-
             state.dataAudio = action.payload
             state.urlAudio = action.payload ? action.payload.url : null
         },
@@ -74,37 +72,8 @@ interface sentAudio {
     ref: string
 }
 
-export const sendAudio = createAsyncThunk('audio/send',
-    async (data: sentAudio, { dispatch }) => {
-        // let { } = getState()
-        dispatch(setLoading(true))
-
-        var formData = new FormData();
-        formData.append("audio", data.blob, data.ref);
-        formData.append("soundId", data.audioId);
-        formData.append("userId", data.userId);
-
-
-        ApiClient.post("/sound/send", formData, {
-            headers: {
-                "Content-type": "multipart/form-data"
-            }
-        }).then(async ({ data: res }) => {
-            dispatch(setCurrentAudio(res))
-            dispatch(getUserRecorded(Number(data.userId)))
-            dispatch(getNotRecordedNb())
-            dispatch(setLoading(false))
-
-        }).catch(err => {
-            console.log(err);
-        })
-    })
-
-
 export const getNotRecordedNb = createAsyncThunk('audio/getNotRecorded',
     async (data: undefined, { dispatch }) => {
-
-        dispatch(setLoading(true))
         ApiClient.get("/sound/count/unrecorded").then(({ data }) => {
             dispatch(setNotRecordedNb(data))
         }).catch(err => {
@@ -120,6 +89,34 @@ export const getUserRecorded = createAsyncThunk('audio/getUserRecorded',
             console.log(err);
         })
     })
+
+
+export const sendAudio = createAsyncThunk('audio/send',
+    async (data: sentAudio, { dispatch }) => {
+        // let { } = getState()
+
+        var formData = new FormData();
+        formData.append("audio", data.blob, data.ref);
+        formData.append("soundId", data.audioId);
+        formData.append("userId", data.userId);
+
+
+        ApiClient.post("/sound/send", formData, {
+            headers: {
+                "Content-type": "multipart/form-data"
+            }
+        }).then(async ({ data: res }) => {
+
+            // dispatch(setCurrentAudio(res))
+            dispatch(getUserRecorded(Number(data.userId)))
+            // dispatch(getNotRecordedNb())
+            // dispatch(setLoading(false))
+
+        }).catch(err => {
+            console.log(err);
+        })
+    })
+
 
 export const getNewAudio = createAsyncThunk('audio/getNewAudio',
     async (userId: number, { dispatch }) => {
