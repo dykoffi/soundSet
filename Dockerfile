@@ -19,4 +19,4 @@ COPY --from=base /App/build/ ./
 
 EXPOSE 3000
 
-CMD pm2-runtime serve --spa --port 3000 --name soundSetApi
+CMD pm2 serve --spa --port 3000 --name audioset-recoder
