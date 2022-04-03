@@ -16,7 +16,8 @@ FROM dykoffi/node:light as release
 
 WORKDIR /App
 COPY --from=base /App/build/ ./
+RUN yarn global add serve
 
 EXPOSE 3000
 
-CMD pm2 serve --spa --port 3000 --name audioset-recoder
+CMD serve
