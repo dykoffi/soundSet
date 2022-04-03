@@ -1,9 +1,12 @@
 import { Cookies } from "react-cookie";
 
+console.log(process.env);
+
+
 export const TIME_OUT_API = 30000;
 export const TOKEN = "";
- export const API_URL = "http://localhost:8080";
-//export const API_URL = "https://05j3x5dsof.execute-api.eu-west-3.amazonaws.com/";
+//  export const API_URL = "http://localhost:8080";
+export const API_URL = "https://soundsetapi-wj5tstwilq-lz.a.run.app/";
 export const COOKIES = new Cookies();
 
 export enum HttpStatusCodes {

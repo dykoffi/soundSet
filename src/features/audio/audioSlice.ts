@@ -109,7 +109,7 @@ export const sendAudio = createAsyncThunk('audio/send',
 
             // dispatch(setCurrentAudio(res))
             dispatch(getUserRecorded(Number(data.userId)))
-            // dispatch(getNotRecordedNb())
+            dispatch(getNotRecordedNb())
             // dispatch(setLoading(false))
 
         }).catch(err => {
