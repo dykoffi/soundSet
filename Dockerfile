@@ -20,4 +20,4 @@ RUN yarn global add serve
 
 EXPOSE 3000
 
-CMD serve
+CMD serve -s 
