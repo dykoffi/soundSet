@@ -36,7 +36,7 @@ export default function Index() {
   }, [logged])
 
   return (
-    <div id="home" className="w-screen min-h-screen flex-col flex md:flex-row">
+    <div id="home" className="w-screen flex-col flex md:flex-row">
       <div className="flex-1 p-5 md:p-10 md:min-h-screen flex flex-col justify-center space-y-5">
         <span className="text-green-600 font-bold text-5xl">Campagne</span>
         <h1 className="text-gray-200 text-4xl font-extralight">

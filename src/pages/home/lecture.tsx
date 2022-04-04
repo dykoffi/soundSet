@@ -65,7 +65,7 @@ export default function Lecture() {
     return (
         <div className="w-screen min-h-screen bg-gray-900 flex flex-col justify-center items-center">
             <div className="w-screen flex p-3">
-                <div className="flex space-x-3 items-center text-white">
+                <div className="flex flex-1 space-x-3 items-center text-white">
                     <span className="p-2 rounded-full bg-green-500 font-bold text-sm flex items-center">
                         {userAudioCount}
                     </span>
