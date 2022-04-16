@@ -33,6 +33,7 @@ export const loginUser = createAsyncThunk('user/login',
         ApiClient.post("/user", data)
             .then(({ data: { data } }) => {
                 COOKIES.set("userinfo_audioset", data, { path: "/", secure: true })
+                COOKIES.set("token", data.token, { path: "/" })
                 dispatch(setUser(data))
                 dispatch(setLogged(true))
             }).catch(err => {

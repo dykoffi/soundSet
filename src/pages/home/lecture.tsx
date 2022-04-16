@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
-import { FastForwardIcon, StopIcon, UserCircleIcon } from "@heroicons/react/solid"
-import { LogoutIcon, MicrophoneIcon, RefreshIcon } from "@heroicons/react/outline";
-import Recorder from "../../features/useRecorder";
+import { FastForwardIcon, StopIcon, UserCircleIcon, MicrophoneIcon } from "@heroicons/react/solid"
+import { LogoutIcon, RefreshIcon } from "@heroicons/react/outline";
+import Recorder from "../../components/recorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setDataAudio, setLoading, startRecord, stopRecord } from "../../features/audio/audioSlice";
@@ -82,7 +82,7 @@ export default function Lecture() {
             </div>
             <div className="w-screen text-center flex-1 space-y-5 flex flex-col justify-center">
                 <hr className="w-24 mx-auto border-green-700" />
-                <div id="fr_text">
+                <div id="fr_text" className="px-4">
                     {currentAudio && <h1 className="text-green-500 font-bold text-xl">
                         {currentAudio.fr}
                     </h1>}
@@ -104,7 +104,7 @@ export default function Lecture() {
                             dataAudio ?
                                 <audio id="audio" controls src={urlAudio} /> :
                                 <div className="flex flex-col">
-                                    <MicrophoneIcon onClick={startRecording} className="h-24 cursor-pointer text-green-600 opacity-40" />
+                                    <MicrophoneIcon onClick={startRecording} className="h-24 cursor-pointer text-green-600" />
                                     <small className="text-white">Appuyer le micro pour enregistrer</small>
                                 </div>
 

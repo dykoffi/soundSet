@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
 import { useDispatch, useSelector } from 'react-redux'
-import { setDataAudio, setRecordState } from './audio/audioSlice'
+import { setDataAudio, setRecordState } from '../features/audio/audioSlice'
 
 
 export default function Recorder() {

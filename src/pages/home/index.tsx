@@ -12,7 +12,7 @@ export default function Index() {
 
   const [data, setData] = useState({
     name: COOKIES.get("userinfo_audioset") ? COOKIES.get("userinfo_audioset").name : "",
-    year: COOKIES.get("userinfo_audioset") ? COOKIES.get("userinfo_audioset").year : 0,
+    year: COOKIES.get("userinfo_audioset") ? COOKIES.get("userinfo_audioset").year : "",
     genre: COOKIES.get("userinfo_audioset") ? COOKIES.get("userinfo_audioset").genre : "M"
   })
 
@@ -31,19 +31,20 @@ export default function Index() {
 
   useEffect(() => {
     if (logged) {
+      // window.location.reload()
       navigate("/lecture")
     }
   }, [logged])
 
   return (
-    <div id="home" className="w-screen flex-col flex md:flex-row">
-      <div className="flex-1 p-5 md:p-10 md:min-h-screen flex flex-col justify-center space-y-5">
+    <div id="home" className="w-screen flex-col min-h-screen flex md:flex-row">
+      <div className="p-5 md:p-10 flex flex-col flex-1 justify-center space-y-5">
         <span className="text-green-600 font-bold text-5xl">Campagne</span>
         <h1 className="text-gray-200 text-4xl font-extralight">
           de collecte audio pour la traduction de language </h1>
         <h1 className="text-gray-200 text-4xl font-bold"><span className="underline decoration-sky-500">Français</span> <ArrowRightIcon className="h-10 inline text-green-500" /> <span className="underline decoration-pink-500 text-green-500">Baoulé</span></h1>
       </div>
-      <div id="connexion_box" className="flex flex-col p-5 space-y-3 flex-1 md:flex-none md:p-24 md:justify-center">
+      <div id="connexion_box" className="flex flex-col p-5 space-y-3 justify-center flex-1 md:flex-none md:p-24 md:justify-center">
         <input defaultValue={data.name} onChange={(ev) => {
           setData({ ...data, name: ev.target.value })
         }} placeholder="name (pseudo)" className="p-3 md:p-2 text-white rounded-md font-bold ring-1 ring-gray-500 bg-opacity-30 bg-gray-700 outline-none" type="text" />

@@ -21,7 +21,7 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "EDY_RY=edyuji craco start",
+        "start": "craco start",
         "build": "craco build",
         "eject": "react-scripts eject"
     },
