@@ -1,12 +1,11 @@
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Navigate } from "react-router";
 import { COOKIES } from "../../config/constants";
 import { loginUser } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import Loading from "../../components/loading";
-import { setLoading } from "../../features/audio/audioSlice";
 
 export default function Index() {
 
@@ -22,8 +21,6 @@ export default function Index() {
 
   const dispatch = useDispatch()
 
-  let navigate = useNavigate()
-
   const saveInfoUser = () => {
     dispatch(loginUser(data))
   }
@@ -35,10 +32,12 @@ export default function Index() {
   }, [logged])
 
   useEffect(() => {
-    if (COOKIES.get("token") && COOKIES.get("userinfo_audioset")) {
-      navigate("/lecture")
-    }
+
   }, [])
+
+  if (COOKIES.get("token") && COOKIES.get("userinfo_audioset")) {
+    return <Navigate to={"/lecture"} state={{ from: location }} replace={true} />
+  }
 
   return (
     <div id="home" className="w-screen flex-col min-h-screen flex md:flex-row">
