@@ -1,16 +1,15 @@
 import React from "react";
-import { Navigate, useLocation, useNavigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
+import { COOKIES } from "../config/constants";
 
 
-function RequireAuth({ children }: { children: JSX.Element }) {
-    // let auth = useAuth();
-    // let location = useLocation();
+export default function RequireAuth({ children }: { children: JSX.Element }) {
 
-    // let navigate = useNavigate()
+    let location = useLocation();
 
-    // if (!auth.user) {
-    //     return navigate("/login", { state: { from: location }, replace: true })
-    // }
+    if (!(COOKIES.get("token") && COOKIES.get("userinfo_audioset"))) {
+        return <Navigate to={"/"} state={{ from: location }} replace={true} />
+    }
 
     return children;
 }

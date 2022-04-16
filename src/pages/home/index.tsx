@@ -25,16 +25,20 @@ export default function Index() {
   let navigate = useNavigate()
 
   const saveInfoUser = () => {
-    dispatch(setLoading(true))
     dispatch(loginUser(data))
   }
 
   useEffect(() => {
     if (logged) {
-      // window.location.reload()
-      navigate("/lecture")
+      window.location.reload()
     }
   }, [logged])
+
+  useEffect(() => {
+    if (COOKIES.get("token") && COOKIES.get("userinfo_audioset")) {
+      navigate("/lecture")
+    }
+  }, [])
 
   return (
     <div id="home" className="w-screen flex-col min-h-screen flex md:flex-row">
@@ -50,7 +54,7 @@ export default function Index() {
         }} placeholder="name (pseudo)" className="p-3 md:p-2 text-white rounded-md font-bold ring-1 ring-gray-500 bg-opacity-30 bg-gray-700 outline-none" type="text" />
         <input defaultValue={data.year} onChange={(ev) => {
           setData({ ...data, year: Number(ev.target.value) })
-        }} placeholder="year" min={1} className="p-3 md:p-2 text-white rounded-md font-bold ring-1 ring-gray-500 bg-opacity-30 bg-gray-700 outline-none text-opacity-50" type="number" />
+        }} placeholder="year" min={1} className="p-3 md:p-2 text-white rounded-md font-bold ring-1 ring-gray-500 bg-opacity-30 bg-gray-700 outline-none" type="number" />
         <select defaultValue={data.genre} onChange={(ev) => {
           setData({ ...data, genre: ev.target.value })
         }} placeholder="genre" className="p-3 md:p-2 text-white rounded-md font-bold ring-1 ring-gray-500 bg-opacity-30 bg-gray-700 outline-none" name="" id="">

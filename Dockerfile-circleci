@@ -1,7 +1,7 @@
 FROM dykoffi/node:light as release
 
 WORKDIR /App
-COPY build ./
+COPY . ./
 RUN yarn global add serve
 
 EXPOSE 3000
