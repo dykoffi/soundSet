@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { COOKIES } from "../../config/constants";
 import { loginUser } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,6 +21,9 @@ export default function Index() {
 
   const dispatch = useDispatch()
 
+  let location = useLocation();
+
+
   const saveInfoUser = () => {
     dispatch(loginUser(data))
   }
@@ -30,10 +33,6 @@ export default function Index() {
       window.location.reload()
     }
   }, [logged])
-
-  useEffect(() => {
-
-  }, [])
 
   if (COOKIES.get("token") && COOKIES.get("userinfo_audioset")) {
     return <Navigate to={"/lecture"} state={{ from: location }} replace={true} />
