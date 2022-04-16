@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_URL, HttpStatusCodes, TIME_OUT_API, TOKEN} from "./constants";
+import { API_URL, HttpStatusCodes, TIME_OUT_API, TOKEN } from "./constants";
 
 const getHeaders = () => {
   const headers = {
@@ -18,3 +18,8 @@ export const ApiClient = axios.create({
   validateStatus: (status: number) =>
     status >= HttpStatusCodes.OK && status < HttpStatusCodes.BAD_REQUEST,
 });
+
+// ping backend server
+ApiClient("/")
+  .then(({ data }) => console.log(data))
+  .catch(err => console.log(err))
