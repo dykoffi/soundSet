@@ -5,7 +5,7 @@ import Home from "./pages/home";
 import Lecture from "./pages/home/lecture";
 import RequireAuth from "./pages/protected";
 
-export function App() {
+export default function App() {
   return (
     <Router>
       <Routes>
