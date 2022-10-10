@@ -36,23 +36,21 @@ export default function User({ image, name, email, ...others }: UserButtonProps)
     const navigate = useNavigate()
 
     return (
-        <UnstyledButton className={classes.user} {...others}>
-            <Group>
-                <Avatar src={image} radius="xl" />
+        <Group p={15}>
+            <Avatar src={image} radius="xl" />
 
-                <div style={{ flex: 1 }}>
-                    <Text size="sm" weight={500}>
-                        {name}
-                    </Text>
+            <div style={{ flex: 1 }}>
+                <Text size="sm" weight={500}>
+                    {name}
+                </Text>
 
-                    <Text color="dimmed" size="xs">
-                        {email}
-                    </Text>
-                </div>
-                <ActionIcon onClick={()=> navigate("/signin")}>
-                    <IconLock size={25} stroke={1.5} />
-                </ActionIcon>
-            </Group>
-        </UnstyledButton>
+                <Text color="dimmed" size="xs">
+                    {email}
+                </Text>
+            </div>
+            <ActionIcon onClick={() => navigate("/signin")}>
+                <IconLock size={25} stroke={1.5} />
+            </ActionIcon>
+        </Group>
     );
 }

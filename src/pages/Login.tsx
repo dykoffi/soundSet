@@ -36,11 +36,10 @@ export default function Authentication() {
                 </Anchor>
             </Text>
 
-            <Paper shadow="md" p={30} mt={30} radius="md" withBorder>
-                <LoadingOverlay visible={visible} overlayBlur={2} />
-                <TextInput label="Email" placeholder="you@mantine.dev" required />
-                <PasswordInput label="Password" placeholder="Your password" required mt="md" />
-                <Button fullWidth mt="xl" onClick={() => navigate("/participants")}>
+            <Paper p={10} mt={30}>
+                <TextInput size='md' label="Email" placeholder="you@mantine.dev" required />
+                <PasswordInput size='md' label="Password" placeholder="Your password" required mt="md" />
+                <Button fullWidth mt="xl" size='md' onClick={() => navigate("/participants")}>
                     Sign in
                 </Button>
             </Paper>

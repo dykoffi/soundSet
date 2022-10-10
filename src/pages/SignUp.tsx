@@ -36,13 +36,12 @@ export default function Signup() {
                     </Anchor>
                 </Text>
 
-                <Paper shadow="md" p={30} mt={30} radius="md" withBorder>
-                    <LoadingOverlay visible={visible} overlayBlur={2} />
-                    <TextInput label="Nom" placeholder="Please fill your name" />
-                    <TextInput label="Email" placeholder="you@mantine.dev" required />
-                    <PasswordInput label="Password" placeholder="Your password" required mt="md" />
-                    <PasswordInput label="Confirm Password" placeholder="Please confirm your password" required mt="md" />
-                    <Button fullWidth mt="xl" onClick={() => setVisible((v) => !v)}>
+                <Paper p={10} mt={30}>
+                    <TextInput size='md' label="Nom" placeholder="Please fill your name" />
+                    <TextInput size='md' label="Email" placeholder="you@mantine.dev" required />
+                    <PasswordInput size='md' label="Password" placeholder="Your password" required mt="md" />
+                    <PasswordInput size='md' label="Confirm Password" placeholder="Please confirm your password" required mt="md" />
+                    <Button size='md' fullWidth mt="xl" onClick={() => setVisible((v) => !v)}>
                         Sign up
                     </Button>
                 </Paper>

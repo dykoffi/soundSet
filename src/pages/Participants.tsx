@@ -1,4 +1,4 @@
-import { createStyles, Container, Title, Text, Button, Group, Header, Stack, Avatar, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl } from '@mantine/core';
+import { createStyles, Container, Title, Text, Button, Group, Header, Stack, Avatar, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader } from '@mantine/core';
 import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router';
 import Illustration from './Illustration';
@@ -147,6 +147,7 @@ export default function Participants() {
           />
         </Stack>
       </Modal>
+      <LoadingOverlay loader={<Loader size={"lg"} variant="bars" />} visible overlayOpacity={0.6} overlayColor={theme.colors.gray[1]} overlayBlur={4} />
     </>
   );
 }
