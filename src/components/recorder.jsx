@@ -28,12 +28,12 @@ export default function Recorder() {
     return (
         <div className={isRecording ? '' : 'hidden'}>
             <AudioReactRecorder
-                foregroundColor="rgb(16, 185, 129)"
-                backgroundColor="rgb(17, 24, 39)"
+                foregroundColor="rgb(200, 10, 10)"
+                backgroundColor="rgb(243, 244, 246)"
                 state={recordState}
                 onStop={onStop}
-                canvasHeight={120}
-                canvasWidth={350}
+                canvasHeight={60}
+                canvasWidth={250}
             />
         </div>
     )

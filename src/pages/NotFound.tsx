@@ -1,18 +1,75 @@
-import React from "react";
-import NFsvg from "../assets/images/notfound.svg";
+import { createStyles, Container, Title, Text, Button, Group } from '@mantine/core';
+import React from 'react';
+import { useNavigate } from 'react-router';
+import Illustration from './Illustration';
 
-export const NotFound = () => {
+const useStyles = createStyles((theme) => ({
+  root: {
+    paddingTop: 80,
+    paddingBottom: 80,
+  },
+
+  inner: {
+    position: 'relative',
+  },
+
+  image: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    left: 0,
+    zIndex: 0,
+    opacity: 0.75,
+  },
+
+  content: {
+    paddingTop: 220,
+    position: 'relative',
+    zIndex: 1,
+
+    [theme.fn.smallerThan('sm')]: {
+      paddingTop: 120,
+    },
+  },
+
+  title: {
+    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    textAlign: 'center',
+    fontWeight: 900,
+    fontSize: 38,
+
+    [theme.fn.smallerThan('sm')]: {
+      fontSize: 32,
+    },
+  },
+
+  description: {
+    maxWidth: 540,
+    margin: 'auto',
+    marginTop: theme.spacing.xl,
+    marginBottom: theme.spacing.xl * 1.5,
+  },
+}));
+
+export default function NothingFoundBackground() {
+  const { classes } = useStyles();
+  const navigate = useNavigate()
+
   return (
-    <div className="h-screen  font-bold flex flex-col items-center w-screen bg-purple-200">
-      <div className="w-1/2 h-2/3 flex flex-col">
-        <img className="lg:w-full  xl:w-full md:w-full h-full z-50" src={NFsvg} alt="" />
+    <Container className={classes.root}>
+      <div className={classes.inner}>
+        <Illustration className={classes.image} />
+        <div className={classes.content}>
+          <Title className={classes.title}>Nothing to see here</Title>
+          <Text color="dimmed" size="lg" align="center" className={classes.description}>
+            Page you are trying to open does not exist. You may have mistyped the address, or the
+            page has been moved to another URL. If you think this is an error contact support.
+          </Text>
+          <Group position="center">
+            <Button size="md" onClick={() => navigate("/")}>Take me back to home page</Button>
+          </Group>
+        </div>
       </div>
-      <div className="flex-1 flex flex-col items-center justify-center bg-purple-50 w-screen z-20">
-        <h1 className="text-9xl text-purple-400 font-extrabold">404</h1>
-        <h1 className="text-2xl text-center text-gray-500 font-extralight animate-ping">
-          Not found
-        </h1>
-      </div>
-    </div>
+    </Container>
   );
-};
+}

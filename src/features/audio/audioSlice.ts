@@ -14,8 +14,8 @@ interface State {
     currentAudio: {
         id_: number
         ref: string
-        fr: string
-        bci: string
+        sourceLang: string
+        targetLang: string
     } | null
     userAudioCount: number
     notRecordedNb: number
@@ -96,6 +96,7 @@ export const sendAudio = createAsyncThunk('audio/send',
         // let { } = getState()
 
         var formData = new FormData();
+        formData.append("audio", data.blob, data.ref);
         formData.append("audio", data.blob, data.ref);
         formData.append("soundId", data.audioId);
         formData.append("userId", data.userId);

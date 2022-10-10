@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import "./assets/styles/index.css";
+import { MantineProvider, Button } from '@mantine/core';
 
 import { Provider } from "react-redux";
 import { store } from "./features/store";
@@ -10,7 +11,9 @@ import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <MantineProvider withGlobalStyles withNormalizeCSS>
+      <App />
+    </MantineProvider>
   </Provider>,
   document.getElementById("root"),
 );
