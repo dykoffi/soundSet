@@ -1,4 +1,4 @@
-import { createStyles, Container, Title, Text, Button, Group, Header, Stack, Avatar, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader } from '@mantine/core';
+import { createStyles, Container, Title, Text, Button, Group, Header, Stack, Avatar, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader, ActionIcon, Tooltip } from '@mantine/core';
 import React, { forwardRef } from 'react';
 import { useNavigate } from 'react-router';
 import Illustration from './Illustration';
@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
 import StatsSegments from '../components/stats';
 import User from '../components/user';
+import { IconLayoutGridAdd } from '@tabler/icons';
 
 const data = [
   {
@@ -94,11 +95,10 @@ export default function Participants() {
       <Stack className='h-screen px-2' justify="flex-start" spacing="xs" sx={(theme) => ({ backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0], height: 300 })}>
         <User {...user} />
         <StatsSegments {...stats} />
-        <Grid align={'end'}>
+        <Grid gutter={"xs"} align={'center'}>
           <Grid.Col span={"auto"}>
             <Select
-              label="Selectionnez un participant"
-              placeholder="Pick one"
+              placeholder="Selectionnez un participant"
               size='md'
               itemComponent={SelectItem}
               data={data}
@@ -112,14 +112,18 @@ export default function Participants() {
             />
           </Grid.Col>
           <Grid.Col span={"content"}>
-            <Button size='md' onClick={() => setopen(true)}>Ajouter</Button>
+            <Tooltip label="Ajouter un participant">
+              <ActionIcon>
+                <IconLayoutGridAdd onClick={() => setopen(true)} />
+              </ActionIcon>
+            </Tooltip>
           </Grid.Col>
         </Grid>
         <Stack className='flex-1'>
 
         </Stack>
-        <Group p={"lg"} grow>
-          <Button size='md'>Envoyer l'audio</Button>
+        <Group p={"lg"}>
+          <Button fullWidth size='md' color="teal.5">Envoyer l'audio</Button>
         </Group>
       </Stack>
       <Modal
@@ -137,7 +141,7 @@ export default function Participants() {
           <NumberInput label="Âge" placeholder="Age" required />
           <TextInput label="Ville" placeholder="Ville" />
           <SegmentedControl
-            color={"blue"}
+            color={"teal.4"}
             // value={value}
             // onChange={setValue}
             data={[
@@ -147,7 +151,7 @@ export default function Participants() {
           />
         </Stack>
       </Modal>
-      <LoadingOverlay loader={<Loader size={"lg"} variant="bars" />} visible overlayOpacity={0.6} overlayColor={theme.colors.gray[1]} overlayBlur={4} />
+      {/* <LoadingOverlay loader={<Loader color={"teal.4"} size={"lg"} variant="bars" />} visible overlayOpacity={0.6} overlayColor={theme.colors.gray[1]} overlayBlur={4} /> */}
     </>
   );
 }
