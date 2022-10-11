@@ -141,7 +141,7 @@ export default function Participants() {
           <NumberInput label="Âge" placeholder="Age" required />
           <TextInput label="Ville" placeholder="Ville" />
           <SegmentedControl
-            color={"teal.4"}
+            color={"teal.5"}
             // value={value}
             // onChange={setValue}
             data={[
