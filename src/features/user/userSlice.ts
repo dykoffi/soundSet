@@ -60,8 +60,8 @@ export const loginInvestigator = createAsyncThunk("investigator/signin", async (
     dispatch(setLoading(true))
     ApiClient.post("/investigator/login", data)
         .then(({ data }) => {
-            COOKIES.set("investigator_info", data, { path: "/", sameSite: "strict", secure: true })
-            COOKIES.set("investigator_token", data.token, { sameSite: "strict", path: "/" })
+            COOKIES.set("investigator_info", data, { path: "/", sameSite: "strict"})
+            COOKIES.set("investigator_token", data.token, { sameSite: "strict", path: "/"})
             dispatch(setInvestigator(data))
             dispatch(setLoading(false))
             window.location.replace("/participants")

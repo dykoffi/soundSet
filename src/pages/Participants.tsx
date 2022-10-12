@@ -3,6 +3,7 @@ import React, { forwardRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Illustration from './Illustration';
 import DataLogo from "../assets/images/logodata354.png"
+import _ from "lodash"
 
 import { useState } from 'react';
 import StatsSegments from '../components/stats';
@@ -55,21 +56,18 @@ export default function Participants() {
   })
   const validData = data.year > 0 && data.town.trim().length > 0 && data.genre.trim().length > 0
 
-  const SelectItem = forwardRef<HTMLDivElement, Investigated>(
-    ({ year, town, genre, name, ...other }: Investigated, ref) => (
-      <div ref={ref} {...other} >
-        <Group noWrap>
-          <Avatar color={"teal.4"} size={"md"} />
-
-          <div>
-            <Text size="sm">{name}</Text>
-            <Text size="xs" color="dimmed">
-              {year} ans, {genre} ({town})
-            </Text>
-          </div>
-        </Group>
-      </div>
-    )
+  const SelectItem = forwardRef<HTMLDivElement, Investigated>(({ year, town, genre, name, id_, ...others }, ref) =>
+    <div ref={ref} key={id_} {...others}>
+      <Group noWrap>
+        <Avatar color={"teal.4"} size={"md"} />
+        <div>
+          <Text size="sm">{name}</Text>
+          <Text size="xs" color="dimmed">
+            {year} ans, {genre} ({town})
+          </Text>
+        </div>
+      </Group>
+    </div>
   );
 
   useEffect(() => {
@@ -87,27 +85,11 @@ export default function Participants() {
               placeholder="Selectionnez un participant"
               size='md'
               color={"teal.5"}
-              itemComponent={({ year, town, genre, name, id_ }) => {
-                return <div key={id_}>
-                  <Group noWrap>
-                    <Avatar color={"teal.4"} size={"md"} />
-                    <div>
-                      <Text size="sm">{name}</Text>
-                      <Text size="xs" color="dimmed">
-                        {year} ans, {genre} ({town})
-                      </Text>
-                    </div>
-                  </Group>
-                </div>
-              }}
-              data={listInvestigated}
+              limit={3}
+              data={listInvestigated.map(elt => ({ value: elt.id_, label: `${elt.name} (${elt.year} ans, ${elt.town})`,   }))}
               searchable
               maxDropdownHeight={400}
               nothingFound="Nobody here"
-              filter={(value, item: any) =>
-                item.name.toLowerCase().includes(value.toLowerCase().trim()) ||
-                item.town.toLowerCase().includes(value.toLowerCase().trim())
-              }
             />
           </Grid.Col>
           <Grid.Col span={"content"}>
