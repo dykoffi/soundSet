@@ -19,7 +19,7 @@ interface User {
         genre: "H" | "F"
     }[] | null,
     investigated: number | null
-    logged: true | false
+    notif: true | false
     loading: boolean
 }
 
@@ -27,8 +27,8 @@ let initialState: User = {
     loading: false,
     investigated: null,
     listInvestigated: null,
-    investigator: null,
-    logged: false
+    investigator: COOKIES.get("investigator_info"),
+    notif: false
 }
 
 export const audioSlice = createSlice({
@@ -38,7 +38,7 @@ export const audioSlice = createSlice({
         setInvestigated: (state, action) => { state.investigated = action.payload },
         setListInvestigated: (state, action) => { state.listInvestigated = action.payload },
         setInvestigator: (state, action) => { state.investigator = action.payload },
-        setLogged: (state, action) => { state.logged = action.payload },
+        setNotif: (state, action) => { state.notif = action.payload },
         setLoading: (state, action) => { state.loading = action.payload }
     }
 })
@@ -47,31 +47,39 @@ export const addInvestigator = createAsyncThunk("investigator/signup", async (da
     dispatch(setLoading(true))
     ApiClient.post("/investigator", data)
         .then(({ data: { data } }) => {
-
+            window.location.replace("/signin")
         })
         .catch((err) => {
             dispatch(setLoading(false))
+            dispatch(setNotif(true))
             console.log(err);
         })
 })
 
 export const loginInvestigator = createAsyncThunk("investigator/signin", async (data: object, { dispatch }) => {
+    dispatch(setLoading(true))
     ApiClient.post("/investigator/login", data)
         .then(({ data }) => {
+            COOKIES.set("investigator_info", data, { path: "/", sameSite: "strict", secure: true })
+            COOKIES.set("investigator_token", data.token, { sameSite: "strict", path: "/" })
             dispatch(setInvestigator(data))
-            dispatch(setLogged(true))
             dispatch(setLoading(false))
+            window.location.replace("/participants")
         })
         .catch((err) => {
             dispatch(setLoading(false))
+            dispatch(setNotif(true))
             console.log(err);
         })
 })
 
 export const logoutInvestigator = createAsyncThunk("investigator/logout", async (token: string, { dispatch }) => {
-    ApiClient.post("/investigator/logout", token)
+    ApiClient.post("/investigator/logout", { data: token })
         .then(({ data }) => {
-            dispatch(setLogged(false))
+            dispatch(setNotif(false))
+            COOKIES.remove("investigator_token", { path: "/" })
+            COOKIES.remove("investigator_info", { path: "/" })
+            window.location.replace("/signin")
         })
         .catch((err) => {
             dispatch(setLoading(false))
@@ -85,27 +93,6 @@ export const addInvestigated = createAsyncThunk("investigator/create", async (da
         .catch()
 })
 
-export const loginUser = createAsyncThunk('user/login',
-    async (data: object, { dispatch }) => {
 
-        ApiClient.post("/user", data)
-            .then(({ data: { data } }) => {
-                COOKIES.set("userinfo_audioset", data, { path: "/", secure: true })
-                COOKIES.set("token", data.token, { path: "/" })
-                dispatch(setInvestigated(data))
-                dispatch(setLogged(true))
-
-            }).catch(err => {
-                console.log(err);
-            })
-    })
-
-export const logoutUser = createAsyncThunk('user/logout',
-    async (data: undefined, { dispatch }) => {
-        COOKIES.remove("userinfo_audioset", { path: "/" })
-        dispatch(setInvestigated(null))
-        dispatch(setLogged(false))
-    })
-
-export const { setInvestigated, setLogged, setInvestigator, setLoading, setListInvestigated } = audioSlice.actions
+export const { setInvestigated, setNotif, setInvestigator, setLoading, setListInvestigated } = audioSlice.actions
 export default audioSlice.reducer

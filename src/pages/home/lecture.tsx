@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setDataAudio, setLoading, startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
-import { logoutUser, setLogged, setInvestigated } from "../../features/user/userSlice";
+import { setInvestigated } from "../../features/user/userSlice";
 import { useNavigate } from "react-router";
 import Loading from "../../components/loading";
 
@@ -23,7 +23,7 @@ export default function Lecture() {
     const isRecording = useSelector((state: RootState) => state.audio.isRecording)
     const dispatch = useDispatch()
 
-    const logged = useSelector((state: RootState) => state.user.logged)
+    const logged = true
 
     let navigate = useNavigate()
 
@@ -48,7 +48,6 @@ export default function Lecture() {
 
     useEffect(() => {
         if (COOKIES.get("userinfo_audioset")) {
-            dispatch(setLogged(true))
             dispatch(setInvestigated(COOKIES.get("userinfo_audioset")))
             dispatch(getNotRecordedNb())
             dispatch(getUserRecorded(COOKIES.get("userinfo_audioset").id_))

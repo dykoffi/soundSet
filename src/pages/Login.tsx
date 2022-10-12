@@ -14,13 +14,15 @@ import {
     Stack,
     Loader,
     useMantineTheme,
+    Notification,
 } from '@mantine/core';
+import { IconX } from '@tabler/icons';
 
 import React, { useState } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { RootState } from '../features/store';
-import { loginInvestigator } from '../features/user/userSlice';
+import { loginInvestigator, setNotif } from '../features/user/userSlice';
 
 export default function Authentication() {
 
@@ -28,6 +30,7 @@ export default function Authentication() {
 
     const theme = useMantineTheme()
     const loading = useSelector((state: RootState) => state.user.loading)
+    const notif = useSelector((state: RootState) => state.user.notif)
     const [visible, setVisible] = useState(false);
     const navigate = useNavigate()
     const [data, setdata] = useState({
@@ -62,10 +65,15 @@ export default function Authentication() {
                     }} size='md' label="Password" placeholder="Your password" required />
                     <Button disabled={!validData} color={"teal.4"} fullWidth mt="xl" size='md' onClick={() => {
                         dispatch(loginInvestigator(data))
-                        navigate("/participants")
                     }}>
                         Sign in
                     </Button>
+                    {
+                        notif &&
+                        <Notification color="red" onClose={() => { dispatch(setNotif(false)) }}>
+                            Identifiants incorrects, veuillez réessayer
+                        </Notification>
+                    }
                 </Stack>
             </Container>
             <LoadingOverlay loader={<Loader color={"teal.4"} size={"lg"} variant="bars" />} visible={loading} overlayOpacity={0.6} overlayColor={theme.colors.gray[1]} overlayBlur={4} />

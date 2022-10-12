@@ -34,16 +34,11 @@ export default function User({ name, email, token, phone, town }: UserButtonProp
                 </Text>
 
                 <Text color="dimmed" size="xs">
-                    {email}
-                </Text>
-
-                <Text color="dimmed" size="xs">
-                    {phone} {town}
+                    {email} ({town})
                 </Text>
             </div>
             <ActionIcon onClick={() => {
                 dispatch(logoutInvestigator(String(token)))
-                navigate("/signin")
             }
             }>
                 <IconLock size={25} stroke={1.5} />

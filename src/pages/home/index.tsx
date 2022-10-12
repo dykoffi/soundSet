@@ -2,7 +2,6 @@ import { ArrowRightIcon } from "@heroicons/react/solid";
 import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { COOKIES } from "../../config/constants";
-import { loginUser } from "../../features/user/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
 import Loading from "../../components/loading";
@@ -17,15 +16,13 @@ export default function Index() {
 
   const loading = useSelector((state: RootState) => state.audio.loading)
 
-  const logged = useSelector((state: RootState) => state.user.logged)
+  const logged = true
 
-  const dispatch = useDispatch()
 
   let location = useLocation();
 
 
   const saveInfoUser = () => {
-    dispatch(loginUser(data))
   }
 
   useEffect(() => {
