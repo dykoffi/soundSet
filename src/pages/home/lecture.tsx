@@ -13,7 +13,7 @@ import Loading from "../../components/loading";
 
 export default function Lecture() {
 
-    const data = useSelector((state: RootState) => state.user.investigated)
+    const investigated = useSelector((state: RootState) => state.user.investigated)
     const notRecordedAudio = useSelector((state: RootState) => state.audio.notRecordedNb)
     const userAudioCount = useSelector((state: RootState) => state.audio.userAudioCount)
     const loading = useSelector((state: RootState) => state.audio.loading)
@@ -32,16 +32,16 @@ export default function Lecture() {
     }
 
     const newAudio = () => {
-        if (data) {
-            dispatch(getNewAudio(data.id_))
+        if (investigated) {
+            dispatch(getNewAudio(investigated))
             dispatch(setDataAudio(null))
         }
     }
 
     const sendAudioData = () => {
-        if (data && dataAudio && currentAudio) {
-            dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(data.id_) }))
-            dispatch(getNewAudio(data.id_))
+        if (investigated && dataAudio && currentAudio) {
+            dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(investigated) }))
+            dispatch(getNewAudio(investigated))
             dispatch(setDataAudio(null))
         }
     }
@@ -67,13 +67,7 @@ export default function Lecture() {
                 <div className="flex space-x-3 items-center text-white">
                     <span><b>{userAudioCount}/{notRecordedAudio}</b> audio(s)</span>
                 </div>
-                <div className="flex-1 flex justify-end items-center mx-3 space-x-3">
-                    {data && <>
-                        <span className="text-white text-sm">{data.name}, {data.year} ans ({data.genre})</span>
-                        <UserCircleIcon onClick={() => dispatch(logoutUser())} className="h-12 text-white" />
-                    </>
-                    }
-                </div>
+              
             </div>
             <div className="p-2 bg-gray-100 flex w-screen">
                 <span className="flex-1">Compte: KMO35D</span>

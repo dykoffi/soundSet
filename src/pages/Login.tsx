@@ -62,6 +62,7 @@ export default function Authentication() {
                     }} size='md' label="Password" placeholder="Your password" required />
                     <Button disabled={!validData} color={"teal.4"} fullWidth mt="xl" size='md' onClick={() => {
                         dispatch(loginInvestigator(data))
+                        navigate("/participants")
                     }}>
                         Sign in
                     </Button>

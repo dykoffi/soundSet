@@ -1,43 +1,32 @@
 import {
-    UnstyledButton,
     UnstyledButtonProps,
     Group,
     Avatar,
     Text,
-    createStyles,
     ActionIcon,
 } from '@mantine/core';
 import { IconLock } from '@tabler/icons';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
-
-const useStyles = createStyles((theme) => ({
-    user: {
-        display: 'block',
-        width: '100%',
-        padding: theme.spacing.md,
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
-
-        '&:hover': {
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
-        },
-    },
-}));
+import { logoutInvestigator } from '../features/user/userSlice';
 
 interface UserButtonProps extends UnstyledButtonProps {
-    image: string;
-    name: string;
-    email: string;
-    icon?: React.ReactNode;
+    name?: string
+    email?: string
+    token?: string
+    phone?: string
+    town?: string
 }
 
-export default function User({ image, name, email, ...others }: UserButtonProps) {
-    const { classes } = useStyles();
+export default function User({ name, email, token, phone, town }: UserButtonProps) {
+
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     return (
         <Group p={15}>
-            <Avatar src={image} radius="xl" />
+            <Avatar radius="xl" size={"md"}  color={"teal.4"} />
 
             <div style={{ flex: 1 }}>
                 <Text size="sm" weight={500}>
@@ -47,8 +36,16 @@ export default function User({ image, name, email, ...others }: UserButtonProps)
                 <Text color="dimmed" size="xs">
                     {email}
                 </Text>
+
+                <Text color="dimmed" size="xs">
+                    {phone} {town}
+                </Text>
             </div>
-            <ActionIcon onClick={() => navigate("/signin")}>
+            <ActionIcon onClick={() => {
+                dispatch(logoutInvestigator(String(token)))
+                navigate("/signin")
+            }
+            }>
                 <IconLock size={25} stroke={1.5} />
             </ActionIcon>
         </Group>

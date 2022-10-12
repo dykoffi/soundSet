@@ -7,16 +7,18 @@ interface User {
         id_: number
         name: string
         email: string
-        contacts: string
-        ville: string
+        phone: string
+        town: string
+        token: string
     } | null,
-    investigated: {
+    listInvestigated: {
         id_: number
         name: string
         year: number
         ville: string
         genre: "H" | "F"
-    } | null,
+    }[] | null,
+    investigated: number | null
     logged: true | false
     loading: boolean
 }
@@ -24,6 +26,7 @@ interface User {
 let initialState: User = {
     loading: false,
     investigated: null,
+    listInvestigated: null,
     investigator: null,
     logged: false
 }
@@ -33,6 +36,7 @@ export const audioSlice = createSlice({
     initialState,
     reducers: {
         setInvestigated: (state, action) => { state.investigated = action.payload },
+        setListInvestigated: (state, action) => { state.listInvestigated = action.payload },
         setInvestigator: (state, action) => { state.investigator = action.payload },
         setLogged: (state, action) => { state.logged = action.payload },
         setLoading: (state, action) => { state.loading = action.payload }
@@ -52,7 +56,7 @@ export const addInvestigator = createAsyncThunk("investigator/signup", async (da
 })
 
 export const loginInvestigator = createAsyncThunk("investigator/signin", async (data: object, { dispatch }) => {
-    ApiClient.post("/investigator/signin", data)
+    ApiClient.post("/investigator/login", data)
         .then(({ data }) => {
             dispatch(setInvestigator(data))
             dispatch(setLogged(true))
@@ -64,9 +68,15 @@ export const loginInvestigator = createAsyncThunk("investigator/signin", async (
         })
 })
 
-export const logoutInvestigator = createAsyncThunk("investigator/logout", async (data: object, { dispatch }) => {
-    ApiClient.post("/investigator", data)
-        .then()
+export const logoutInvestigator = createAsyncThunk("investigator/logout", async (token: string, { dispatch }) => {
+    ApiClient.post("/investigator/logout", token)
+        .then(({ data }) => {
+            dispatch(setLogged(false))
+        })
+        .catch((err) => {
+            dispatch(setLoading(false))
+            console.log(err);
+        })
 })
 
 export const addInvestigated = createAsyncThunk("investigator/create", async (data: object, { dispatch }) => {
@@ -97,5 +107,5 @@ export const logoutUser = createAsyncThunk('user/logout',
         dispatch(setLogged(false))
     })
 
-export const { setInvestigated, setLogged, setInvestigator, setLoading } = audioSlice.actions
+export const { setInvestigated, setLogged, setInvestigator, setLoading, setListInvestigated } = audioSlice.actions
 export default audioSlice.reducer
