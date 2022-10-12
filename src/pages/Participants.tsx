@@ -1,5 +1,5 @@
 import { createStyles, Container, Title, Text, Button, Group, Header, Stack, Avatar, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader, ActionIcon, Tooltip, Blockquote } from '@mantine/core';
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Illustration from './Illustration';
 import DataLogo from "../assets/images/logodata354.png"
@@ -7,41 +7,10 @@ import DataLogo from "../assets/images/logodata354.png"
 import { useState } from 'react';
 import StatsSegments from '../components/stats';
 import User from '../components/user';
-import { IconLayoutGridAdd } from '@tabler/icons';
+import { IconCheck, IconLayoutGridAdd } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
-import { addInvestigated } from '../features/user/userSlice';
-
-
-
-
-const parts = [
-  {
-    image: 'https://img.icons8.com/clouds/256/000000/futurama-bender.png',
-    label: 'Edy koffi',
-    value: 'Bender Bending Rodríguez',
-    description: '15 ans - Abidjan (16 audios)',
-  },
-
-  {
-    image: 'https://img.icons8.com/clouds/256/000000/futurama-mom.png',
-    label: 'Carol Miller',
-    value: 'Carol Miller',
-    description: 'One of the richest people on Earth',
-  },
-  {
-    image: 'https://img.icons8.com/clouds/256/000000/homer-simpson.png',
-    label: 'Homer Simpson',
-    value: 'Homer Simpson',
-    description: 'Overweight, lazy, and often ignorant',
-  },
-  {
-    image: 'https://img.icons8.com/clouds/256/000000/spongebob-squarepants.png',
-    label: 'Spongebob Squarepants',
-    value: 'Spongebob Squarepants',
-    description: 'Not just a sponge',
-  },
-];
+import { addInvestigated, getListInvestigated } from '../features/user/userSlice';
 
 let stats = {
   "total": "345,765",
@@ -62,32 +31,19 @@ let stats = {
   ]
 }
 
-interface ItemProps extends React.ComponentPropsWithoutRef<'div'> {
-  image: string;
-  label: string;
-  description: string;
+interface Investigated extends React.ComponentPropsWithoutRef<'div'> {
+  id_: number
+  name: string
+  year: number
+  town: string
+  genre: "H" | "F"
 }
-
-const SelectItem = forwardRef<HTMLDivElement, ItemProps>(
-  ({ image, label, description, ...others }: ItemProps, ref) => (
-    <div ref={ref} {...others}>
-      <Group noWrap>
-        <Avatar color={"teal.4"} size={"md"} />
-
-        <div>
-          <Text size="sm">{label}</Text>
-          <Text size="xs" color="dimmed">
-            {description}
-          </Text>
-        </div>
-      </Group>
-    </div>
-  )
-);
 
 export default function Participants() {
   const theme = useMantineTheme();
   const investigator = useSelector((state: RootState) => state.user.investigator)
+  const listInvestigated: any[] = useSelector((state: RootState) => state.user.listInvestigated)
+  const loading = useSelector((state: RootState) => state.user.loading)
 
   const [opened, setopen] = useState(false)
   const dispatch = useDispatch()
@@ -99,7 +55,26 @@ export default function Participants() {
   })
   const validData = data.year > 0 && data.town.trim().length > 0 && data.genre.trim().length > 0
 
+  const SelectItem = forwardRef<HTMLDivElement, Investigated>(
+    ({ year, town, genre, name, ...other }: Investigated, ref) => (
+      <div ref={ref} {...other} >
+        <Group noWrap>
+          <Avatar color={"teal.4"} size={"md"} />
 
+          <div>
+            <Text size="sm">{name}</Text>
+            <Text size="xs" color="dimmed">
+              {year} ans, {genre} ({town})
+            </Text>
+          </div>
+        </Group>
+      </div>
+    )
+  );
+
+  useEffect(() => {
+    dispatch(getListInvestigated())
+  }, [])
 
   return (
     <>
@@ -112,14 +87,26 @@ export default function Participants() {
               placeholder="Selectionnez un participant"
               size='md'
               color={"teal.5"}
-              itemComponent={SelectItem}
-              data={parts}
+              itemComponent={({ year, town, genre, name, id_ }) => {
+                return <div key={id_}>
+                  <Group noWrap>
+                    <Avatar color={"teal.4"} size={"md"} />
+                    <div>
+                      <Text size="sm">{name}</Text>
+                      <Text size="xs" color="dimmed">
+                        {year} ans, {genre} ({town})
+                      </Text>
+                    </div>
+                  </Group>
+                </div>
+              }}
+              data={listInvestigated}
               searchable
               maxDropdownHeight={400}
               nothingFound="Nobody here"
               filter={(value, item: any) =>
-                item.label.toLowerCase().includes(value.toLowerCase().trim()) ||
-                item.description.toLowerCase().includes(value.toLowerCase().trim())
+                item.name.toLowerCase().includes(value.toLowerCase().trim()) ||
+                item.town.toLowerCase().includes(value.toLowerCase().trim())
               }
             />
           </Grid.Col>
@@ -169,16 +156,17 @@ export default function Participants() {
         overlayBlur={3}
       >
         <Stack spacing={"sm"}>
-          <TextInput label="Nom" placeholder="Nom" value={data.name} onChange={(ev) => {
+          <TextInput disabled={loading} label="Nom" placeholder="Nom" value={data.name} onChange={(ev) => {
             setdata({ ...data, name: ev.target.value })
           }} />
-          <NumberInput label="Âge" placeholder="Age" required value={data.year} onChange={(value) => {
+          <NumberInput disabled={loading} label="Âge" placeholder="Age" required value={data.year} onChange={(value) => {
             setdata({ ...data, year: Number(value) })
           }} />
-          <TextInput label="Ville" placeholder="Ville" value={data.town} onChange={(ev) => {
+          <TextInput disabled={loading} label="Ville" placeholder="Ville" value={data.town} onChange={(ev) => {
             setdata({ ...data, town: ev.target.value })
           }} />
           <SegmentedControl
+            disabled={loading}
             color={"teal.5"}
             value={data.genre}
             onChange={(value) => {
@@ -191,7 +179,11 @@ export default function Participants() {
           />
         </Stack>
         <Group></Group>
-        <Button disabled={!validData} fullWidth my={"md"} variant={"outline"} size={"md"} color={"teal.5"} onClick={() => {
+        <Button leftIcon={
+          loading ?
+            <Loader size={"sm"} variant="bars" color={"teal.4"} /> :
+            <IconCheck size={20} />
+        } disabled={!validData} fullWidth my={"md"} variant={"outline"} size={"md"} color={"teal.5"} onClick={() => {
           dispatch(addInvestigated(data))
         }} >Valider</Button>
       </Modal>

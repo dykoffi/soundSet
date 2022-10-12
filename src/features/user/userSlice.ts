@@ -15,9 +15,9 @@ interface User {
         id_: number
         name: string
         year: number
-        ville: string
+        town: string
         genre: "H" | "F"
-    }[] | null,
+    }[],
     investigated: number | null
     notif: true | false
     loading: boolean
@@ -26,7 +26,7 @@ interface User {
 let initialState: User = {
     loading: false,
     investigated: null,
-    listInvestigated: null,
+    listInvestigated: [],
     investigator: COOKIES.get("investigator_info"),
     notif: false
 }
@@ -87,10 +87,37 @@ export const logoutInvestigator = createAsyncThunk("investigator/logout", async 
         })
 })
 
-export const addInvestigated = createAsyncThunk("investigator/create", async (data: object, { dispatch }) => {
-    ApiClient.post("/investigated", data)
-        .then()
-        .catch()
+export const addInvestigated = createAsyncThunk("investigator/create", async (data: object, { dispatch, getState }) => {
+    dispatch(setLoading(true))
+    let state: any = getState()
+    let InvestigatorId = state.user ? Number(state.user.investigator.id_) : null
+    ApiClient.post("/investigated", { data, InvestigatorId })
+        .then(async ({ data }) => {
+            dispatch(getListInvestigated())
+        })
+        .catch((err) => {
+            dispatch(setLoading(false))
+            dispatch(setNotif(true))
+            console.log(err);
+        })
+})
+
+export const getListInvestigated = createAsyncThunk("investigator/create", async (data: undefined, { dispatch, getState }) => {
+    dispatch(setLoading(true))
+    let state: any = getState()
+    let InvestigatorId = state.user ? Number(state.user.investigator.id_) : null
+    ApiClient.get(`/investigator/${InvestigatorId}/investigated`)
+        .then(({ data }) => {
+            console.log(data);
+
+            dispatch(setLoading(false))
+            dispatch(setListInvestigated(data))
+        })
+        .catch((err) => {
+            dispatch(setLoading(false))
+            dispatch(setNotif(true))
+            console.log(err);
+        })
 })
 
 
