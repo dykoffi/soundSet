@@ -11,7 +11,8 @@ import User from '../components/user';
 import { IconCheck, IconLayoutGridAdd } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
-import { addInvestigated, getListInvestigated } from '../features/user/userSlice';
+import { addInvestigated, getListInvestigated, setInvestigated } from '../features/user/userSlice';
+import { getNewAudio, setCurrentLangage } from '../features/audio/audioSlice';
 
 let stats = {
   "total": "345,765",
@@ -32,19 +33,16 @@ let stats = {
   ]
 }
 
-interface Investigated extends React.ComponentPropsWithoutRef<'div'> {
-  id_: number
-  name: string
-  year: number
-  town: string
-  genre: "H" | "F"
-}
-
 export default function Participants() {
   const theme = useMantineTheme();
   const investigator = useSelector((state: RootState) => state.user.investigator)
+  const investigated = useSelector((state: RootState) => state.user.investigated)
   const listInvestigated: any[] = useSelector((state: RootState) => state.user.listInvestigated)
   const loading = useSelector((state: RootState) => state.user.loading)
+
+  const currentAudio = useSelector((state: RootState) => state.audio.currentAudio)
+  const currentLangage = useSelector((state: RootState) => state.audio.currentLangage)
+
 
   const [opened, setopen] = useState(false)
   const dispatch = useDispatch()
@@ -56,23 +54,15 @@ export default function Participants() {
   })
   const validData = data.year > 0 && data.town.trim().length > 0 && data.genre.trim().length > 0
 
-  const SelectItem = forwardRef<HTMLDivElement, Investigated>(({ year, town, genre, name, id_, ...others }, ref) =>
-    <div ref={ref} key={id_} {...others}>
-      <Group noWrap>
-        <Avatar color={"teal.4"} size={"md"} />
-        <div>
-          <Text size="sm">{name}</Text>
-          <Text size="xs" color="dimmed">
-            {year} ans, {genre} ({town})
-          </Text>
-        </div>
-      </Group>
-    </div>
-  );
-
   useEffect(() => {
     dispatch(getListInvestigated())
   }, [])
+
+  useEffect(() => {
+    if (investigated) {
+      dispatch(getNewAudio(Number(investigated)))
+    }
+  }, [investigated])
 
   return (
     <>
@@ -86,10 +76,13 @@ export default function Participants() {
               size='md'
               color={"teal.5"}
               limit={3}
-              data={listInvestigated.map(elt => ({ value: elt.id_, label: `${elt.name} (${elt.year} ans, ${elt.town})`,   }))}
+              data={listInvestigated.map(elt => ({ value: elt.id_, label: `${elt.name} (${elt.year} ans, ${elt.town})`, }))}
               searchable
               maxDropdownHeight={400}
               nothingFound="Nobody here"
+              onChange={(value) => {
+                dispatch(setInvestigated(value))
+              }}
             />
           </Grid.Col>
           <Grid.Col span={"content"}>
@@ -101,22 +94,22 @@ export default function Participants() {
           </Grid.Col>
         </Grid>
         <Stack className='flex-1'>
-          <Blockquote cite="– Forrest Gump">
-            Life is like an npm install – you never know what you are going to get.
-          </Blockquote>
+          {currentAudio && <Blockquote cite={`– ${currentLangage}`}>
+            {currentAudio.sourceLang}
+          </Blockquote>}
+
           <SegmentedControl
             color={"teal.5"}
-            // value={value}
-            // onChange={setValue}
+            onChange={(value) => { dispatch(setCurrentLangage(value)) }}
             data={[
               { label: 'Francais', value: 'francais' },
-              { label: 'Baoulé', value: 'baoule' },
+              { label: 'Dioula', value: 'dioula' },
             ]}
           />
         </Stack>
         <Group p={"lg"} grow>
           <Button size='md' color="teal.5">Envoyer l'audio</Button>
-          <Button size='md' variant='outline' color="teal.5">Passer</Button>
+          <Button size='md' variant='outline' color="teal.5" onClick={() => { dispatch(getNewAudio(Number(investigated))) }}>Passer</Button>
         </Group>
       </Stack>
       <Modal

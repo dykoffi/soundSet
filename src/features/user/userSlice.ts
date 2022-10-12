@@ -74,7 +74,7 @@ export const loginInvestigator = createAsyncThunk("investigator/signin", async (
 })
 
 export const logoutInvestigator = createAsyncThunk("investigator/logout", async (token: string, { dispatch }) => {
-    ApiClient.post("/investigator/logout", { data: token })
+    ApiClient.post("/investigator/logout", { token })
         .then(({ data }) => {
             dispatch(setNotif(false))
             COOKIES.remove("investigator_token", { path: "/" })

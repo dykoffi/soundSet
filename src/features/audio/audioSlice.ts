@@ -10,6 +10,16 @@ interface State {
         type: string
         url: string
     } | null
+    dataAudioSoucre: {
+        blob: Blob
+        type: string
+        url: string
+    } | null
+    dataAudioTarget: {
+        blob: Blob
+        type: string
+        url: string
+    } | null
     urlAudio: string
     currentAudio: {
         id_: number
@@ -19,6 +29,7 @@ interface State {
     } | null
     userAudioCount: number
     notRecordedNb: number
+    currentLangage: string
 }
 
 let initialState: State = {
@@ -26,10 +37,13 @@ let initialState: State = {
     isRecording: false,
     recordState: null,
     dataAudio: null,
+    dataAudioSoucre: null,
+    dataAudioTarget: null,
     urlAudio: "",
     notRecordedNb: 0,
     userAudioCount: 0,
-    currentAudio: null
+    currentAudio: null,
+    currentLangage: "francais"
 }
 
 export const audioSlice = createSlice({
@@ -40,28 +54,25 @@ export const audioSlice = createSlice({
             state.isRecording = true
             state.dataAudio = null
         },
-        stopRecord: (state) => {
-            state.isRecording = false
-        },
         setDataAudio: (state, action) => {
             state.dataAudio = action.payload
             state.urlAudio = action.payload ? action.payload.url : null
         },
-        setRecordState: (state, action) => {
-            state.recordState = action.payload
+        setDataAudioSource: (state, action) => {
+            state.dataAudioSoucre = action.payload
+            state.urlAudio = action.payload ? action.payload.url : null
         },
-        setNotRecordedNb: (state, action) => {
-            state.notRecordedNb = action.payload
+        setDataAudioTarget: (state, action) => {
+            state.dataAudioTarget = action.payload
+            state.urlAudio = action.payload ? action.payload.url : null
         },
-        setUserAudioCount: (state, action) => {
-            state.userAudioCount = action.payload
-        },
-        setCurrentAudio: (state, action) => {
-            state.currentAudio = action.payload
-        },
-        setLoading: (state, action) => {
-            state.loading = action.payload
-        }
+        stopRecord: (state) => { state.isRecording = false },
+        setRecordState: (state, action) => { state.recordState = action.payload },
+        setNotRecordedNb: (state, action) => { state.notRecordedNb = action.payload },
+        setUserAudioCount: (state, action) => { state.userAudioCount = action.payload },
+        setCurrentAudio: (state, action) => { state.currentAudio = action.payload },
+        setCurrentLangage: (state, action) => { state.currentLangage = action.payload },
+        setLoading: (state, action) => { state.loading = action.payload }
     }
 })
 
@@ -132,5 +143,5 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         })
     })
 
-export const { setLoading, startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
+export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer
