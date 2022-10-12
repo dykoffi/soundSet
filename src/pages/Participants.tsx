@@ -1,18 +1,15 @@
-import { createStyles, Container, Title, Text, Button, Group, Header, Stack, Avatar, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader, ActionIcon, Tooltip, Blockquote } from '@mantine/core';
-import React, { forwardRef, useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import Illustration from './Illustration';
-import DataLogo from "../assets/images/logodata354.png"
+import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader, ActionIcon, Tooltip, Blockquote } from '@mantine/core';
+import React, {  useEffect } from 'react';
 import _ from "lodash"
 
 import { useState } from 'react';
 import StatsSegments from '../components/stats';
 import User from '../components/user';
-import { IconCheck, IconLayoutGridAdd } from '@tabler/icons';
+import { IconCheck, IconChevronRight, IconChevronsRight, IconLayoutGridAdd } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
 import { addInvestigated, getListInvestigated, setInvestigated } from '../features/user/userSlice';
-import { getNewAudio, setCurrentLangage } from '../features/audio/audioSlice';
+import { getNewAudio, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
 
 let stats = {
   "total": "345,765",
@@ -41,6 +38,8 @@ export default function Participants() {
   const loading = useSelector((state: RootState) => state.user.loading)
 
   const currentAudio = useSelector((state: RootState) => state.audio.currentAudio)
+  const dataAudioSource = useSelector((state: RootState) => state.audio.dataAudioSource)
+  const dataAudioTarget = useSelector((state: RootState) => state.audio.dataAudioTarget)
   const currentLangage = useSelector((state: RootState) => state.audio.currentLangage)
 
 
@@ -53,6 +52,16 @@ export default function Participants() {
     town: ""
   })
   const validData = data.year > 0 && data.town.trim().length > 0 && data.genre.trim().length > 0
+  const validAudio = investigated && dataAudioSource && dataAudioTarget && currentAudio
+
+  const sendAudioData = () => {
+    if (validAudio) {
+      dispatch(sendAudio({ blobSource: dataAudioSource.blob, blobTarget: dataAudioTarget.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(investigated) }))
+      dispatch(setDataAudioSource(null))
+      dispatch(setDataAudioTarget(null))
+      dispatch(getNewAudio(investigated))
+    }
+  }
 
   useEffect(() => {
     dispatch(getListInvestigated())
@@ -102,14 +111,18 @@ export default function Participants() {
             color={"teal.5"}
             onChange={(value) => { dispatch(setCurrentLangage(value)) }}
             data={[
-              { label: 'Francais', value: 'francais' },
-              { label: 'Dioula', value: 'dioula' },
+              { label: 'Francais', value: 'source' },
+              { label: 'Dioula', value: 'target' },
             ]}
           />
         </Stack>
         <Group p={"lg"} grow>
-          <Button size='md' color="teal.5">Envoyer l'audio</Button>
-          <Button size='md' variant='outline' color="teal.5" onClick={() => { dispatch(getNewAudio(Number(investigated))) }}>Passer</Button>
+          <Button disabled={!validAudio} size='md' color="teal.5">Envoyer l'audio</Button>
+          <Button rightIcon={
+            loading ? <Loader size={"sm"} variant="bars" color={"teal.4"} /> : <IconChevronsRight />
+          }
+
+            disabled={!investigated} size='md' variant='outline' color="teal.5" onClick={() => { dispatch(getNewAudio(Number(investigated))) }}>Passer</Button>
         </Group>
       </Stack>
       <Modal

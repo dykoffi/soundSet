@@ -108,8 +108,6 @@ export const getListInvestigated = createAsyncThunk("investigator/create", async
     let InvestigatorId = state.user ? Number(state.user.investigator.id_) : null
     ApiClient.get(`/investigator/${InvestigatorId}/investigated`)
         .then(({ data }) => {
-            console.log(data);
-
             dispatch(setLoading(false))
             dispatch(setListInvestigated(data))
         })

@@ -2,13 +2,15 @@ import React, { useEffect } from 'react'
 
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
 import { useDispatch, useSelector } from 'react-redux'
-import { setDataAudio, setRecordState } from '../features/audio/audioSlice'
+import { setDataAudio, setDataAudioSource, setDataAudioTarget, setRecordState } from '../features/audio/audioSlice'
 
 
 export default function Recorder() {
 
     const recordState = useSelector((state) => state.audio.recordState)
     const isRecording = useSelector((state) => state.audio.isRecording)
+    const currentLangage = useSelector((state) => state.audio.currentLangage)
+
     const dispatch = useDispatch()
 
 
@@ -22,7 +24,11 @@ export default function Recorder() {
 
 
     const onStop = (dataAudio) => {
-        dispatch(setDataAudio(dataAudio))
+        if (currentLangage === "source") {
+            dispatch(setDataAudioSource(dataAudio))
+        } else {
+            dispatch(setDataAudioTarget(dataAudio))
+        }
     }
 
     return (

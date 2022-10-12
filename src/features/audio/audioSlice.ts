@@ -10,7 +10,7 @@ interface State {
         type: string
         url: string
     } | null
-    dataAudioSoucre: {
+    dataAudioSource: {
         blob: Blob
         type: string
         url: string
@@ -37,13 +37,13 @@ let initialState: State = {
     isRecording: false,
     recordState: null,
     dataAudio: null,
-    dataAudioSoucre: null,
+    dataAudioSource: null,
     dataAudioTarget: null,
     urlAudio: "",
     notRecordedNb: 0,
     userAudioCount: 0,
     currentAudio: null,
-    currentLangage: "francais"
+    currentLangage: "source"
 }
 
 export const audioSlice = createSlice({
@@ -59,7 +59,7 @@ export const audioSlice = createSlice({
             state.urlAudio = action.payload ? action.payload.url : null
         },
         setDataAudioSource: (state, action) => {
-            state.dataAudioSoucre = action.payload
+            state.dataAudioSource = action.payload
             state.urlAudio = action.payload ? action.payload.url : null
         },
         setDataAudioTarget: (state, action) => {
@@ -77,7 +77,8 @@ export const audioSlice = createSlice({
 })
 
 interface sentAudio {
-    blob: Blob
+    blobSource: Blob
+    blobTarget: Blob
     audioId: string
     userId: string
     ref: string
@@ -107,8 +108,8 @@ export const sendAudio = createAsyncThunk('audio/send',
         // let { } = getState()
 
         var formData = new FormData();
-        formData.append("audio", data.blob, data.ref);
-        formData.append("audio", data.blob, data.ref);
+        formData.append("audio", data.blobSource, data.ref);
+        formData.append("audio", data.blobTarget, data.ref);
         formData.append("soundId", data.audioId);
         formData.append("userId", data.userId);
 
@@ -122,9 +123,11 @@ export const sendAudio = createAsyncThunk('audio/send',
             // dispatch(setCurrentAudio(res))
             dispatch(getUserRecorded(Number(data.userId)))
             dispatch(getNotRecordedNb())
-            // dispatch(setLoading(false))
+            dispatch(setLoading(false))
+
 
         }).catch(err => {
+            dispatch(setLoading(false))
             console.log(err);
         })
     })
@@ -139,6 +142,7 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
             dispatch(getNotRecordedNb())
             dispatch(setLoading(false))
         }).catch(err => {
+            dispatch(setLoading(false))
             console.log(err);
         })
     })

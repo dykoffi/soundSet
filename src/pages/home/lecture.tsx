@@ -40,7 +40,7 @@ export default function Lecture() {
 
     const sendAudioData = () => {
         if (investigated && dataAudio && currentAudio) {
-            dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(investigated) }))
+            // dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(investigated) }))
             dispatch(getNewAudio(investigated))
             dispatch(setDataAudio(null))
         }
