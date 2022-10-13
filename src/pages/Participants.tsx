@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
 import { addInvestigated, getListInvestigated, setInvestigated } from '../features/user/userSlice';
 import { getNewAudio, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
-import Recorder from '../components/recorder';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 
 let stats = {

@@ -8,7 +8,6 @@ import {
 import { IconLock } from '@tabler/icons';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
 import { logoutInvestigator } from '../features/user/userSlice';
 
 interface UserButtonProps extends UnstyledButtonProps {
@@ -21,7 +20,6 @@ interface UserButtonProps extends UnstyledButtonProps {
 
 export default function User({ name, email, token, phone, town }: UserButtonProps) {
 
-    const navigate = useNavigate()
     const dispatch = useDispatch()
 
     return (

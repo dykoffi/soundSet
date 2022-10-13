@@ -7,8 +7,8 @@ export default function RequireAuth({ children }: { children: JSX.Element }) {
 
     let location = useLocation();
 
-    if (!(COOKIES.get("token") && COOKIES.get("userinfo_audioset"))) {
-        return <Navigate to={"/"} state={{ from: location }} replace={true} />
+    if (!(COOKIES.get("investigator_token") || !COOKIES.get("investigator_info"))) {
+        return <Navigate to={"/signin"} state={{ from: location }} replace={true} />
     }
 
     return children;

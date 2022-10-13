@@ -60,8 +60,8 @@ export const loginInvestigator = createAsyncThunk("investigator/signin", async (
     dispatch(setLoading(true))
     ApiClient.post("/investigator/login", data)
         .then(({ data }) => {
-            COOKIES.set("investigator_info", data, { path: "/", sameSite: "strict"})
-            COOKIES.set("investigator_token", data.token, { sameSite: "strict", path: "/"})
+            COOKIES.set("investigator_info", data, { path: "/", sameSite: "strict" })
+            COOKIES.set("investigator_token", data.token, { sameSite: "strict", path: "/" })
             dispatch(setInvestigator(data))
             dispatch(setLoading(false))
             window.location.replace("/participants")
@@ -75,10 +75,10 @@ export const loginInvestigator = createAsyncThunk("investigator/signin", async (
 
 export const logoutInvestigator = createAsyncThunk("investigator/logout", async (token: string, { dispatch }) => {
     ApiClient.post("/investigator/logout", { token })
-        .then(({ data }) => {
+        .then(() => {
             dispatch(setNotif(false))
-            COOKIES.remove("investigator_token", { path: "/" })
-            COOKIES.remove("investigator_info", { path: "/" })
+            COOKIES.remove("investigator_token", { path: "/", sameSite: true, secure: true })
+            COOKIES.remove("investigator_info", { path: "/", sameSite: true, secure: true })
             window.location.replace("/signin")
         })
         .catch((err) => {
