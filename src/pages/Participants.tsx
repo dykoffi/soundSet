@@ -1,11 +1,11 @@
-import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Loader, ActionIcon, Tooltip, Blockquote } from '@mantine/core';
+import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Loader, ActionIcon, Tooltip, Blockquote, Text } from '@mantine/core';
 import React, { useEffect } from 'react';
 import _ from "lodash"
 
 import { useState } from 'react';
 import StatsSegments from '../components/stats';
 import User from '../components/user';
-import { IconCheck, IconChecks, IconChevronsRight, IconLayoutGridAdd } from '@tabler/icons';
+import { IconCheck, IconChecks, IconChevronsRight, IconLayoutGridAdd, IconUserPlus } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
 import { addInvestigated, getListInvestigated, setInvestigated } from '../features/user/userSlice';
@@ -42,7 +42,6 @@ export default function Participants() {
   const dataAudioSource = useSelector((state: RootState) => state.audio.dataAudioSource)
   const dataAudioTarget = useSelector((state: RootState) => state.audio.dataAudioTarget)
   const currentLangage = useSelector((state: RootState) => state.audio.currentLangage)
-  const isRecording = useSelector((state: RootState) => state.audio.isRecording)
   const urlAudio = useSelector((state: RootState) => state.audio.urlAudio)
 
 
@@ -116,7 +115,7 @@ export default function Participants() {
           <Grid.Col span={"content"}>
             <Tooltip label="Ajouter un participant">
               <ActionIcon>
-                <IconLayoutGridAdd onClick={() => setopen(true)} />
+                <IconUserPlus onClick={() => setopen(true)} />
               </ActionIcon>
             </Tooltip>
           </Grid.Col>
@@ -139,7 +138,6 @@ export default function Participants() {
             </>
           }
           <SegmentedControl
-            disabled={isRecording}
             color={"teal.5"}
             onChange={(value) => { dispatch(setCurrentLangage(value)) }}
             data={[
@@ -147,7 +145,11 @@ export default function Participants() {
               { label: 'Dioula', value: 'target' },
             ]}
           />
-          <audio className='w-full' id="audio" controls src={urlAudio} />
+          {
+            urlAudio ?
+              <audio className='w-full' id="audio" controls src={urlAudio} /> :
+              <div className='text-center'><Text size={"sm"} color={"dimmed"}>Aucun audio enregistré</Text></div>
+          }
         </Stack>
         <Group p={"lg"} grow>
           <Button

@@ -3,8 +3,6 @@ import { ApiClient } from '../../config/axios'
 
 interface State {
     loading: false
-    isRecording: boolean,
-    recordState: any
     dataAudio: {
         blob: Blob
         url: string
@@ -31,8 +29,6 @@ interface State {
 
 let initialState: State = {
     loading: false,
-    isRecording: false,
-    recordState: null,
     dataAudio: null,
     dataAudioSource: null,
     dataAudioTarget: null,
@@ -47,12 +43,6 @@ export const audioSlice = createSlice({
     name: "audio",
     initialState,
     reducers: {
-        startRecord: (state) => {
-            state.isRecording = true
-            state.dataAudio = null
-            state.dataAudioSource = null
-            state.dataAudioTarget = null
-        },
         setDataAudioSource: (state, action) => {
             state.dataAudioSource = action.payload
             state.urlAudio = action.payload ? action.payload.url : null
@@ -61,8 +51,6 @@ export const audioSlice = createSlice({
             state.dataAudioTarget = action.payload
             state.urlAudio = action.payload ? action.payload.url : null
         },
-        stopRecord: (state) => { state.isRecording = false },
-        setRecordState: (state, action) => { state.recordState = action.payload },
         setNotRecordedNb: (state, action) => { state.notRecordedNb = action.payload },
         setUserAudioCount: (state, action) => { state.userAudioCount = action.payload },
         setCurrentAudio: (state, action) => { state.currentAudio = action.payload },
@@ -149,5 +137,5 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         })
     })
 
-export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, startRecord, stopRecord, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
+export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer
