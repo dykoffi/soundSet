@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import AudioReactRecorder, { RecordState } from 'audio-react-recorder'
 import { useDispatch, useSelector } from 'react-redux'
-import { setDataAudio, setDataAudioSource, setDataAudioTarget, setRecordState } from '../features/audio/audioSlice'
+import { setDataAudioSource, setDataAudioTarget, setRecordState } from '../features/audio/audioSlice'
 
 
 export default function Recorder() {
@@ -24,6 +24,7 @@ export default function Recorder() {
 
 
     const onStop = (dataAudio) => {
+        console.log("terminé");
         if (currentLangage === "source") {
             dispatch(setDataAudioSource(dataAudio))
         } else {
@@ -32,15 +33,13 @@ export default function Recorder() {
     }
 
     return (
-        <div className={isRecording ? '' : 'hidden'}>
-            <AudioReactRecorder
-                foregroundColor="rgb(200, 10, 10)"
-                backgroundColor="rgb(243, 244, 246)"
-                state={recordState}
-                onStop={onStop}
-                canvasHeight={60}
-                canvasWidth={250}
-            />
-        </div>
+        <AudioReactRecorder
+            foregroundColor="rgb(200, 10, 10)"
+            backgroundColor="rgb(243, 244, 246)"
+            state={recordState}
+            onStop={onStop}
+            canvasHeight={60}
+            canvasWidth={250}
+        />
     )
 }

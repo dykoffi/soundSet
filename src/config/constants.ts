@@ -1,7 +1,7 @@
 import { Cookies } from "react-cookie";
 
 export const TIME_OUT_API = 30000;
-export const API_URL = "http://192.168.86.54:8000";
+export const API_URL = "http://localhost:8000";
 export const COOKIES = new Cookies();
 export const TOKEN: any = COOKIES.get("investigator_token") || "";
 

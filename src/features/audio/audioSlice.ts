@@ -7,17 +7,14 @@ interface State {
     recordState: any
     dataAudio: {
         blob: Blob
-        type: string
         url: string
     } | null
     dataAudioSource: {
         blob: Blob
-        type: string
         url: string
     } | null
     dataAudioTarget: {
         blob: Blob
-        type: string
         url: string
     } | null
     urlAudio: string
@@ -53,10 +50,8 @@ export const audioSlice = createSlice({
         startRecord: (state) => {
             state.isRecording = true
             state.dataAudio = null
-        },
-        setDataAudio: (state, action) => {
-            state.dataAudio = action.payload
-            state.urlAudio = action.payload ? action.payload.url : null
+            state.dataAudioSource = null
+            state.dataAudioTarget = null
         },
         setDataAudioSource: (state, action) => {
             state.dataAudioSource = action.payload
@@ -71,7 +66,14 @@ export const audioSlice = createSlice({
         setNotRecordedNb: (state, action) => { state.notRecordedNb = action.payload },
         setUserAudioCount: (state, action) => { state.userAudioCount = action.payload },
         setCurrentAudio: (state, action) => { state.currentAudio = action.payload },
-        setCurrentLangage: (state, action) => { state.currentLangage = action.payload },
+        setCurrentLangage: (state, action) => {
+            state.currentLangage = action.payload
+            if (action.payload === "source") {
+                state.urlAudio = state.dataAudioSource ? state.dataAudioSource.url : ""
+            } else {
+                state.urlAudio = state.dataAudioTarget ? state.dataAudioTarget.url : ""
+            }
+        },
         setLoading: (state, action) => { state.loading = action.payload }
     }
 })
@@ -147,5 +149,5 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         })
     })
 
-export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, startRecord, stopRecord, setDataAudio, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
+export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, startRecord, stopRecord, setRecordState, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer

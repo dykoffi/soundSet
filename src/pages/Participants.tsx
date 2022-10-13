@@ -1,15 +1,17 @@
-import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Overlay, LoadingOverlay, Loader, ActionIcon, Tooltip, Blockquote } from '@mantine/core';
-import React, {  useEffect } from 'react';
+import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Loader, ActionIcon, Tooltip, Blockquote } from '@mantine/core';
+import React, { useEffect } from 'react';
 import _ from "lodash"
 
 import { useState } from 'react';
 import StatsSegments from '../components/stats';
 import User from '../components/user';
-import { IconCheck, IconChevronRight, IconChevronsRight, IconLayoutGridAdd } from '@tabler/icons';
+import { IconCheck, IconChecks, IconChevronsRight, IconLayoutGridAdd } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
 import { addInvestigated, getListInvestigated, setInvestigated } from '../features/user/userSlice';
 import { getNewAudio, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
+import Recorder from '../components/recorder';
+import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 
 let stats = {
   "total": "345,765",
@@ -41,8 +43,11 @@ export default function Participants() {
   const dataAudioSource = useSelector((state: RootState) => state.audio.dataAudioSource)
   const dataAudioTarget = useSelector((state: RootState) => state.audio.dataAudioTarget)
   const currentLangage = useSelector((state: RootState) => state.audio.currentLangage)
+  const isRecording = useSelector((state: RootState) => state.audio.isRecording)
+  const urlAudio = useSelector((state: RootState) => state.audio.urlAudio)
 
 
+  const recorderControls = useAudioRecorder()
   const [opened, setopen] = useState(false)
   const dispatch = useDispatch()
   const [data, setdata] = useState({
@@ -54,6 +59,7 @@ export default function Participants() {
   const validData = data.year > 0 && data.town.trim().length > 0 && data.genre.trim().length > 0
   const validAudio = investigated && dataAudioSource && dataAudioTarget && currentAudio
 
+
   const sendAudioData = () => {
     if (validAudio) {
       dispatch(sendAudio({ blobSource: dataAudioSource.blob, blobTarget: dataAudioTarget.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(investigated) }))
@@ -63,9 +69,23 @@ export default function Participants() {
     }
   }
 
+  const saveAudio = (blob: Blob) => {
+    let data = {
+      blob: blob,
+      url: URL.createObjectURL(blob)
+    }
+
+    if (currentLangage === "source") {
+      dispatch(setDataAudioSource(data))
+    } else {
+      dispatch(setDataAudioTarget(data))
+    }
+  }
+
   useEffect(() => {
     dispatch(getListInvestigated())
   }, [])
+
 
   useEffect(() => {
     if (investigated) {
@@ -103,11 +123,24 @@ export default function Participants() {
           </Grid.Col>
         </Grid>
         <Stack className='flex-1'>
-          {currentAudio && <Blockquote cite={`– ${currentLangage}`}>
-            {currentAudio.sourceLang}
-          </Blockquote>}
+          {currentAudio &&
+            <>
+              <Blockquote cite="Sélectionnez le langage à enregistrer (Français ou Dioula)">
+                {currentAudio.sourceLang}
+              </Blockquote>
+              <Group position='right'>
+                <AudioRecorder onRecordingComplete={saveAudio} recorderControls={recorderControls} classes={{
+                  AudioRecorderClass: "shadow-none",
+                  AudioRecorderStartSaveClass: "opacity-40",
+                  AudioRecorderDiscardClass: "opacity-40",
+                  AudioRecorderPauseResumeClass: "opacity-40",
 
+                }} />
+              </Group>
+            </>
+          }
           <SegmentedControl
+            disabled={isRecording}
             color={"teal.5"}
             onChange={(value) => { dispatch(setCurrentLangage(value)) }}
             data={[
@@ -115,13 +148,18 @@ export default function Participants() {
               { label: 'Dioula', value: 'target' },
             ]}
           />
+          <audio className='w-full' id="audio" controls src={urlAudio} />
         </Stack>
         <Group p={"lg"} grow>
-          <Button disabled={!validAudio} size='md' color="teal.5">Envoyer l'audio</Button>
+          <Button
+            onClick={sendAudioData}
+            rightIcon={
+              loading ? <Loader size={"sm"} variant="bars" color={"teal.4"} /> : <IconChecks />
+            }
+            disabled={!validAudio} size='md' color="teal.5">Envoyer</Button>
           <Button rightIcon={
             loading ? <Loader size={"sm"} variant="bars" color={"teal.4"} /> : <IconChevronsRight />
           }
-
             disabled={!investigated} size='md' variant='outline' color="teal.5" onClick={() => { dispatch(getNewAudio(Number(investigated))) }}>Passer</Button>
         </Group>
       </Stack>

@@ -5,7 +5,7 @@ import { LogoutIcon, RefreshIcon } from "@heroicons/react/outline";
 import Recorder from "../../components/recorder";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../features/store";
-import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setDataAudio, setLoading, startRecord, stopRecord } from "../../features/audio/audioSlice";
+import { getNewAudio, getNotRecordedNb, getUserRecorded, sendAudio, setLoading, startRecord, stopRecord } from "../../features/audio/audioSlice";
 import { COOKIES } from "../../config/constants";
 import { setInvestigated } from "../../features/user/userSlice";
 import { useNavigate } from "react-router";
@@ -34,7 +34,7 @@ export default function Lecture() {
     const newAudio = () => {
         if (investigated) {
             dispatch(getNewAudio(investigated))
-            dispatch(setDataAudio(null))
+            // dispatch(setDataAudio(null))
         }
     }
 
@@ -42,7 +42,7 @@ export default function Lecture() {
         if (investigated && dataAudio && currentAudio) {
             // dispatch(sendAudio({ blob: dataAudio.blob, audioId: String(currentAudio.id_), ref: String(currentAudio.ref), userId: String(investigated) }))
             dispatch(getNewAudio(investigated))
-            dispatch(setDataAudio(null))
+            // dispatch(setDataAudio(null))
         }
     }
 
