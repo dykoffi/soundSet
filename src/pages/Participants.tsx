@@ -1,4 +1,4 @@
-import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Loader, ActionIcon, Tooltip, Blockquote, Text } from '@mantine/core';
+import { Button, Group, Stack, Select, Grid, Modal, useMantineTheme, TextInput, NumberInput, SegmentedControl, Loader, ActionIcon, Tooltip, Blockquote, Text, Container } from '@mantine/core';
 import React, { useEffect } from 'react';
 import _ from "lodash"
 
@@ -9,7 +9,7 @@ import { IconCheck, IconChecks, IconChevronsRight, IconLayoutGridAdd, IconUserPl
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
 import { addInvestigated, getListInvestigated, getStatsInvestigated, setInvestigated, setPopup } from '../features/user/userSlice';
-import { getNewAudio, getNotRecordedNb, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
+import { getNewAudio, getNotRecordedNb, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget, setUrlAudio } from '../features/audio/audioSlice';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 
 export default function Participants() {
@@ -18,6 +18,7 @@ export default function Participants() {
   const investigated = useSelector((state: RootState) => state.user.investigated)
   const listInvestigated: any[] = useSelector((state: RootState) => state.user.listInvestigated)
   const loading = useSelector((state: RootState) => state.user.loading)
+  const loadingAudio = useSelector((state: RootState) => state.audio.loading)
   const popup = useSelector((state: RootState) => state.user.popup)
   const stats = useSelector((state: RootState) => state.user.stats)
 
@@ -83,11 +84,12 @@ export default function Participants() {
         <Grid gutter={"xs"} align={'center'}>
           <Grid.Col span={"auto"}>
             <Select
+              disabled={loadingAudio}
               placeholder="Selectionnez un participant"
               size='md'
               color={"teal.5"}
               limit={3}
-              data={listInvestigated.map(elt => ({ value: elt.id_, label: `${elt.name} (${elt.year} ans, ${elt.town})`, }))}
+              data={listInvestigated.map(elt => ({ value: elt.id_, label: `${elt.name} (${elt.year} ans, ${elt.genre}, ${elt.town})`, }))}
               searchable
               maxDropdownHeight={400}
               nothingFound="Nobody here"
@@ -113,22 +115,31 @@ export default function Participants() {
           </Grid.Col>
         </Grid>
         <Stack className='flex-1'>
-          {currentAudio &&
+          <Container>
+            {
+              loadingAudio &&
+              <Loader color={"teal.4"} size={"sm"} variant="bars" />
+            }
+          </Container>
+          {currentAudio && !loadingAudio &&
             <>
               <Blockquote cite="Sélectionnez le langage à enregistrer (Français ou Dioula)">
                 {currentAudio.sourceLang}
               </Blockquote>
-              <Group position='right'>
-                <AudioRecorder onRecordingComplete={saveAudio} recorderControls={recorderControls} classes={{
-                  AudioRecorderClass: "shadow-none",
-                  AudioRecorderStartSaveClass: "opacity-40",
-                  AudioRecorderDiscardClass: "opacity-40",
-                  AudioRecorderPauseResumeClass: "opacity-40",
 
-                }} />
-              </Group>
             </>
           }
+
+          <Group position='right'>
+            <AudioRecorder onRecordingComplete={saveAudio} recorderControls={recorderControls} classes={{
+              AudioRecorderClass: `shadow-none ${!currentAudio && "hidden"}`,
+              AudioRecorderStartSaveClass: "opacity-40",
+              AudioRecorderDiscardClass: "opacity-40",
+              AudioRecorderPauseResumeClass: "opacity-40",
+
+            }} />
+
+          </Group>
           <SegmentedControl
             color={"teal.5"}
             onChange={(value) => { dispatch(setCurrentLangage(value)) }}
@@ -149,7 +160,12 @@ export default function Participants() {
             rightIcon={<IconChecks />}
             disabled={!validAudio} size='md' color="teal.5">Envoyer</Button>
           <Button rightIcon={<IconChevronsRight />}
-            disabled={!investigated} size='md' variant='outline' color="teal.5" onClick={() => { dispatch(getNewAudio(Number(investigated))) }}>Passer</Button>
+            disabled={!investigated} size='md' variant='outline' color="teal.5" onClick={() => {
+              dispatch(setDataAudioSource(null))
+              dispatch(setDataAudioTarget(null))
+              dispatch(setUrlAudio(null))
+              dispatch(getNewAudio(Number(investigated)))
+            }}>Passer</Button>
         </Group>
       </Stack>
       <Modal

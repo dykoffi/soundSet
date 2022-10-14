@@ -1,13 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import _ from 'lodash'
 import { ApiClient } from '../../config/axios'
 import { getStatsInvestigated } from '../user/userSlice'
 
 interface State {
     loading: false
-    dataAudio: {
-        blob: Blob
-        url: string
-    } | null
     dataAudioSource: {
         blob: Blob
         url: string
@@ -16,7 +13,7 @@ interface State {
         blob: Blob
         url: string
     } | null
-    urlAudio: string
+    urlAudio: string | null
     currentAudio: {
         id_: number
         ref: string
@@ -29,10 +26,9 @@ interface State {
 
 let initialState: State = {
     loading: false,
-    dataAudio: null,
     dataAudioSource: null,
     dataAudioTarget: null,
-    urlAudio: "",
+    urlAudio: null,
     notRecordedNb: 0,
     currentAudio: null,
     currentLangage: "source"
@@ -43,22 +39,46 @@ export const audioSlice = createSlice({
     initialState,
     reducers: {
         setDataAudioSource: (state, action) => {
-            state.dataAudioSource = action.payload
-            state.urlAudio = action.payload ? action.payload.url : null
+            return {
+                ...state,
+                dataAudioSource: _.cloneDeep(action.payload),
+                urlAudio: action.payload ? action.payload.url : null
+            }
+        },
+        setUrlAudio: (state, action) => {
+            return {
+                ...state,
+                urlAudio: action.payload
+            }
         },
         setDataAudioTarget: (state, action) => {
-            state.dataAudioTarget = action.payload
-            state.urlAudio = action.payload ? action.payload.url : null
-        },
-        setNotRecordedNb: (state, action) => { state.notRecordedNb = action.payload },
-        setCurrentAudio: (state, action) => { state.currentAudio = action.payload },
-        setCurrentLangage: (state, action) => {
-            state.currentLangage = action.payload
-            if (action.payload === "source") {
-                state.urlAudio = state.dataAudioSource ? state.dataAudioSource.url : ""
-            } else {
-                state.urlAudio = state.dataAudioTarget ? state.dataAudioTarget.url : ""
+            return {
+                ...state,
+                dataAudioTarget: _.cloneDeep(action.payload),
+                urlAudio: action.payload ? action.payload.url : null
             }
+        },
+        setNotRecordedNb: (state, action) => { return { ...state, notRecordedNb: action.payload } },
+        setCurrentAudio: (state, action) => {
+            return {
+                ...state,
+                currentAudio: action.payload,
+                urlAudio: null
+            }
+        },
+        setCurrentLangage: (state, action) => {
+            let url
+            if (action.payload === "source") {
+                url = state.dataAudioSource ? state.dataAudioSource.url : null
+            } else {
+                url = state.dataAudioTarget ? state.dataAudioTarget.url : null
+            }
+            return {
+                ...state,
+                currentLangage: action.payload,
+                urlAudio: url
+            }
+
         },
         setLoading: (state, action) => { state.loading = action.payload }
     }
@@ -109,7 +129,7 @@ export const sendAudio = createAsyncThunk('audio/send',
 
 
 export const getNewAudio = createAsyncThunk('audio/getNewAudio',
-    async (userId: number, { dispatch }) => {
+    async (userId: number, { dispatch, getState }) => {
         dispatch(setLoading(true))
         ApiClient.get(`/sound/begin/${userId}`).then(({ data }) => {
             dispatch(setCurrentAudio(data))
@@ -121,5 +141,5 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         })
     })
 
-export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, setNotRecordedNb, setCurrentAudio } = audioSlice.actions
+export const { setLoading, setCurrentLangage, setUrlAudio, setDataAudioSource, setDataAudioTarget, setNotRecordedNb, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer

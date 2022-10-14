@@ -49,7 +49,7 @@ export default function StatsSegments({ total, diff, data }: StatsSegmentsProps)
   const segments = data.map((segment) => ({
     value: segment.part,
     color: segment.color,
-    label: segment.part > 10 ? `${segment.part}%` : undefined,
+    label: segment.part > 15 ? `${segment.part}%` : undefined,
   }));
 
   const notRecordedNb = useSelector((state: RootState) => state.audio.notRecordedNb)
