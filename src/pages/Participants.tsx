@@ -55,6 +55,8 @@ export default function Participants() {
       blob: blob,
       url: URL.createObjectURL(blob)
     }
+    console.log("Save audio");
+
 
     if (currentLangage === "source") {
       dispatch(setDataAudioSource(data))
@@ -115,31 +117,29 @@ export default function Participants() {
           </Grid.Col>
         </Grid>
         <Stack className='flex-1'>
-          <Container>
-            {
-              loadingAudio &&
+          {
+            loadingAudio &&
+            <Container>
               <Loader color={"teal.4"} size={"sm"} variant="bars" />
-            }
-          </Container>
+            </Container>
+          }
           {currentAudio && !loadingAudio &&
             <>
               <Blockquote cite="Sélectionnez le langage à enregistrer (Français ou Dioula)">
                 {currentAudio.sourceLang}
               </Blockquote>
-
             </>
           }
-
           <Group position='right'>
             <AudioRecorder onRecordingComplete={saveAudio} recorderControls={recorderControls} classes={{
-              AudioRecorderClass: `shadow-none ${!currentAudio && "hidden"}`,
+              AudioRecorderClass: `shadow-none ${!(currentAudio && !loadingAudio) && "hidden"}`,
               AudioRecorderStartSaveClass: "opacity-40",
               AudioRecorderDiscardClass: "opacity-40",
               AudioRecorderPauseResumeClass: "opacity-40",
 
             }} />
-
           </Group>
+
           <SegmentedControl
             color={"teal.5"}
             onChange={(value) => { dispatch(setCurrentLangage(value)) }}
