@@ -1,4 +1,4 @@
-import { createStyles, Progress, Box, Text, Group, Paper, SimpleGrid } from '@mantine/core';
+import { createStyles, Progress, Box, Text, Group, Paper, SimpleGrid, Loader } from '@mantine/core';
 import { IconArrowUpRight, IconDeviceAnalytics } from '@tabler/icons';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -53,6 +53,7 @@ export default function StatsSegments({ total, diff, data }: StatsSegmentsProps)
   }));
 
   const notRecordedNb = useSelector((state: RootState) => state.audio.notRecordedNb)
+  const loading = useSelector((state: RootState) => state.user.statsLoading)
 
   const descriptions = data.map((stat) => (
     <Box key={stat.label} sx={{ borderBottomColor: stat.color }} className={classes.stat}>
@@ -76,7 +77,11 @@ export default function StatsSegments({ total, diff, data }: StatsSegmentsProps)
             {diff}/<small>{total} enregistré(s)</small>
           </Text>
         </Group>
-        <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
+        {
+          loading ?
+            <Loader color={"teal.4"} size={"sm"} variant="bars" /> :
+            <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
+        }
       </Group>
 
       <Text color="dimmed" size="sm">
