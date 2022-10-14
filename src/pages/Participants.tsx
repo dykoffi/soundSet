@@ -8,25 +8,25 @@ import User from '../components/user';
 import { IconCheck, IconChecks, IconChevronsRight, IconLayoutGridAdd, IconUserPlus } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
-import { addInvestigated, getListInvestigated, setInvestigated } from '../features/user/userSlice';
+import { addInvestigated, getListInvestigated, setInvestigated, setPopup } from '../features/user/userSlice';
 import { getNewAudio, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
 
 let stats = {
-  "total": "345,765",
-  "diff": 18,
-  "data": [
+  total: "345,765",
+  diff: 18,
+  data: [
     {
-      "label": "Homme",
-      "count": "204,001",
-      "part": 59,
-      "color": "#47d6ab"
+      label: "Homme (34)",
+      count: "204,001",
+      part: 59,
+      color: "#47d6ab"
     },
     {
-      "label": "Femme",
-      "count": "121,017",
-      "part": 41,
-      "color": "#03141a"
+      label: "Femme (12)",
+      count: "121,017",
+      part: 25,
+      color: "#03141a"
     }
   ]
 }
@@ -37,6 +37,7 @@ export default function Participants() {
   const investigated = useSelector((state: RootState) => state.user.investigated)
   const listInvestigated: any[] = useSelector((state: RootState) => state.user.listInvestigated)
   const loading = useSelector((state: RootState) => state.user.loading)
+  const popup = useSelector((state: RootState) => state.user.popup)
 
   const currentAudio = useSelector((state: RootState) => state.audio.currentAudio)
   const dataAudioSource = useSelector((state: RootState) => state.audio.dataAudioSource)
@@ -115,7 +116,7 @@ export default function Participants() {
           <Grid.Col span={"content"}>
             <Tooltip label="Ajouter un participant">
               <ActionIcon>
-                <IconUserPlus onClick={() => setopen(true)} />
+                <IconUserPlus onClick={() => dispatch(setPopup(true))} />
               </ActionIcon>
             </Tooltip>
           </Grid.Col>
@@ -154,9 +155,7 @@ export default function Participants() {
         <Group p={"lg"} grow>
           <Button
             onClick={sendAudioData}
-            rightIcon={
-              loading ? <Loader size={"sm"} variant="bars" color={"teal.4"} /> : <IconChecks />
-            }
+            rightIcon={<IconChecks />}
             disabled={!validAudio} size='md' color="teal.5">Envoyer</Button>
           <Button rightIcon={
             loading ? <Loader size={"sm"} variant="bars" color={"teal.4"} /> : <IconChevronsRight />
@@ -168,10 +167,10 @@ export default function Participants() {
         centered
         withCloseButton={false}
         title="Ajouter un nouveau participant"
-        opened={opened}
+        opened={popup}
         overlayColor={theme.colors.gray[2]}
         onClose={() => {
-          setopen(false)
+          dispatch(setPopup(false))
           setdata({
             name: "",
             year: 0,

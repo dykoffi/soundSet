@@ -83,16 +83,6 @@ export const getNotRecordedNb = createAsyncThunk('audio/getNotRecorded',
         })
     })
 
-export const getUserRecorded = createAsyncThunk('audio/getUserRecorded',
-    async (userId: number, { dispatch }) => {
-        ApiClient.get(`/sound/count/recorded/${userId}`).then(({ data }) => {
-            dispatch(setUserAudioCount(data))
-        }).catch(err => {
-            console.log(err);
-        })
-    })
-
-
 export const sendAudio = createAsyncThunk('audio/send',
     async (data: sentAudio, { dispatch }) => {
         // let { } = getState()
@@ -110,11 +100,8 @@ export const sendAudio = createAsyncThunk('audio/send',
             }
         }).then(async ({ data: res }) => {
 
-            // dispatch(setCurrentAudio(res))
-            dispatch(getUserRecorded(Number(data.userId)))
             dispatch(getNotRecordedNb())
             dispatch(setLoading(false))
-
 
         }).catch(err => {
             dispatch(setLoading(false))
@@ -128,7 +115,6 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         dispatch(setLoading(true))
         ApiClient.get(`/sound/begin/${userId}`).then(({ data }) => {
             dispatch(setCurrentAudio(data))
-            dispatch(getUserRecorded(userId))
             dispatch(getNotRecordedNb())
             dispatch(setLoading(false))
         }).catch(err => {
