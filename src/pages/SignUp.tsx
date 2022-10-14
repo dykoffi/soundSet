@@ -62,22 +62,22 @@ export default function Signup() {
                 <Stack p={10} mt={30} spacing="md">
                     <TextInput value={data.name} onChange={(ev) => {
                         setdata({ ...data, name: ev.target.value })
-                    }} size='md' label="Name" placeholder="Please fill your name" />
+                    }} size='md' label="Name" />
                     <TextInput type={"email"} value={data.email} onChange={(ev) => {
                         setdata({ ...data, email: ev.target.value })
-                    }} size='md' label="Email" placeholder="you@mantine.dev" required />
+                    }} size='md' label="Email" required />
                     <TextInput value={data.town} onChange={(ev) => {
                         setdata({ ...data, town: ev.target.value })
-                    }} size='md' label="City" placeholder="Abidjan" required />
+                    }} size='md' label="City" required />
                     <TextInput type={"tel"} value={data.phone} onChange={(ev) => {
                         setdata({ ...data, phone: ev.target.value })
-                    }} size='md' label="Phone" placeholder="+225" required />
+                    }} size='md' label="Phone" required />
                     <PasswordInput value={data.password} onChange={(ev) => {
                         setdata({ ...data, password: ev.target.value })
-                    }} size='md' label="Password" placeholder="Your password" required />
+                    }} size='md' label="Password" required />
                     <PasswordInput onChange={(ev) => {
                         setconfirmPassword(ev.target.value)
-                    }} size='md' label="Confirm Password" placeholder="Please confirm your password" required />
+                    }} size='md' label="Confirm Password" required />
                     <Button disabled={!validData} color={"teal.4"} size='md' fullWidth onClick={() => {
                         dispacth(addInvestigator(data))
                     }}>

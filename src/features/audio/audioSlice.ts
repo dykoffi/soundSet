@@ -83,8 +83,7 @@ export const getNotRecordedNb = createAsyncThunk('audio/getNotRecorded',
 
 export const sendAudio = createAsyncThunk('audio/send',
     async (data: sentAudio, { dispatch }) => {
-        // let { } = getState()
-
+        dispatch(setLoading(true))
         var formData = new FormData();
         formData.append("audio", data.blobSource, data.ref);
         formData.append("audio", data.blobTarget, data.ref);

@@ -1,9 +1,8 @@
-FROM dykoffi/node:light as release
+FROM dykoffi/node-serve:light as release
 
 WORKDIR /App
-COPY . ./
-RUN yarn global add serve
+COPY build ./
 
-EXPOSE 3000
+EXPOSE 8000
 
-CMD serve -s 
+CMD serve -sp 8000

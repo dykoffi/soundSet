@@ -119,6 +119,7 @@ export const addInvestigated = createAsyncThunk("investigator/create", async (da
             dispatch(getListInvestigated())
             dispatch(getStatsInvestigated())
             dispatch(setPopup(false))
+            dispatch(setLoading(false))
         })
         .catch((err) => {
             dispatch(setLoading(false))
@@ -133,8 +134,8 @@ export const getListInvestigated = createAsyncThunk("investigated/list", async (
     let InvestigatorId = state.user ? Number(state.user.investigator.id_) : null
     ApiClient.get(`/investigator/${InvestigatorId}/investigated`)
         .then(({ data }) => {
-            dispatch(setLoading(false))
             dispatch(setListInvestigated(data))
+            dispatch(setLoading(false))
         })
         .catch((err) => {
             dispatch(setLoading(false))
@@ -150,6 +151,7 @@ export const getStatsInvestigated = createAsyncThunk("investigated/stats", async
     ApiClient.get(`/investigator/${InvestigatorId}/stats`)
         .then(({ data }) => {
             dispatch(setStats(data))
+            dispatch(setLoading(false))
         })
         .catch((err) => {
             dispatch(setLoading(false))

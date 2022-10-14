@@ -53,10 +53,10 @@ export default function Authentication() {
                 <Stack p={10} mt={30} spacing="md">
                     <TextInput size='md' label="Email" value={data.email} onChange={(ev) => {
                         setdata({ ...data, email: ev.target.value })
-                    }} placeholder="you@mantine.dev" required />
+                    }} required />
                     <PasswordInput value={data.password} onChange={(ev) => {
                         setdata({ ...data, password: ev.target.value })
-                    }} size='md' label="Password" placeholder="Your password" required />
+                    }} size='md' label="Password" required />
                     <Button disabled={!validData} color={"teal.4"} fullWidth mt="xl" size='md' onClick={() => {
                         dispatch(loginInvestigator(data))
                     }}>
