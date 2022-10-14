@@ -1,22 +1,17 @@
 import {
     TextInput,
     PasswordInput,
-    Checkbox,
     Anchor,
-    Paper,
     Title,
     Text,
     Container,
-    Group,
     Button,
     LoadingOverlay,
-    Center,
     Stack,
     Loader,
     useMantineTheme,
     Notification,
 } from '@mantine/core';
-import { IconX } from '@tabler/icons';
 
 import React, { useState } from "react"
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,7 +26,6 @@ export default function Authentication() {
     const theme = useMantineTheme()
     const loading = useSelector((state: RootState) => state.user.loading)
     const notif = useSelector((state: RootState) => state.user.notif)
-    const [visible, setVisible] = useState(false);
     const navigate = useNavigate()
     const [data, setdata] = useState({
         email: "",

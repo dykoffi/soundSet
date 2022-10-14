@@ -22,6 +22,7 @@ interface User {
     notif: true | false
     popup: true | false
     loading: boolean
+    stats: any
 }
 
 let initialState: User = {
@@ -30,7 +31,25 @@ let initialState: User = {
     listInvestigated: [],
     investigator: COOKIES.get("investigator_info"),
     notif: false,
-    popup: false
+    popup: false,
+    stats: {
+        total: "0",
+        diff: 0,
+        data: [
+            {
+                label: "Homme (0)",
+                count: "0",
+                part: 0,
+                color: "#47d6ab"
+            },
+            {
+                label: "Femme (0)",
+                count: "0",
+                part: 0,
+                color: "#03141a"
+            }
+        ]
+    }
 }
 
 export const audioSlice = createSlice({
@@ -42,6 +61,7 @@ export const audioSlice = createSlice({
         setInvestigator: (state, action) => { state.investigator = action.payload },
         setNotif: (state, action) => { state.notif = action.payload },
         setPopup: (state, action) => { state.popup = action.payload },
+        setStats: (state, action) => { state.stats = action.payload },
         setLoading: (state, action) => { state.loading = action.payload }
     }
 })
@@ -67,7 +87,7 @@ export const loginInvestigator = createAsyncThunk("investigator/signin", async (
             COOKIES.set("investigator_token", data.token, { sameSite: "strict", path: "/" })
             dispatch(setInvestigator(data))
             dispatch(setLoading(false))
-            window.location.replace("/participants")
+            window.location.replace("/")
         })
         .catch((err) => {
             dispatch(setLoading(false))
@@ -97,6 +117,7 @@ export const addInvestigated = createAsyncThunk("investigator/create", async (da
     ApiClient.post("/investigated", { data, InvestigatorId })
         .then(async ({ data }) => {
             dispatch(getListInvestigated())
+            dispatch(getStatsInvestigated())
             dispatch(setPopup(false))
         })
         .catch((err) => {
@@ -106,14 +127,12 @@ export const addInvestigated = createAsyncThunk("investigator/create", async (da
         })
 })
 
-export const getListInvestigated = createAsyncThunk("investigator/create", async (data: undefined, { dispatch, getState }) => {
+export const getListInvestigated = createAsyncThunk("investigated/list", async (data: undefined, { dispatch, getState }) => {
     dispatch(setLoading(true))
     let state: any = getState()
     let InvestigatorId = state.user ? Number(state.user.investigator.id_) : null
     ApiClient.get(`/investigator/${InvestigatorId}/investigated`)
         .then(({ data }) => {
-            console.log(data);
-
             dispatch(setLoading(false))
             dispatch(setListInvestigated(data))
         })
@@ -124,6 +143,21 @@ export const getListInvestigated = createAsyncThunk("investigator/create", async
         })
 })
 
+export const getStatsInvestigated = createAsyncThunk("investigated/stats", async (data: undefined, { dispatch, getState }) => {
+    dispatch(setLoading(true))
+    let state: any = getState()
+    let InvestigatorId = state.user ? Number(state.user.investigator.id_) : null
+    ApiClient.get(`/investigator/${InvestigatorId}/stats`)
+        .then(({ data }) => {
+            dispatch(setStats(data))
+        })
+        .catch((err) => {
+            dispatch(setLoading(false))
+            dispatch(setNotif(true))
+            console.log(err);
+        })
+})
 
-export const { setInvestigated, setNotif,setPopup, setInvestigator, setLoading, setListInvestigated } = audioSlice.actions
+
+export const { setInvestigated, setNotif, setPopup, setStats, setInvestigator, setLoading, setListInvestigated } = audioSlice.actions
 export default audioSlice.reducer

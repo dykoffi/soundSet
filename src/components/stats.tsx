@@ -1,6 +1,8 @@
 import { createStyles, Progress, Box, Text, Group, Paper, SimpleGrid } from '@mantine/core';
 import { IconArrowUpRight, IconDeviceAnalytics } from '@tabler/icons';
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../features/store';
 
 const useStyles = createStyles((theme) => ({
   progressLabel: {
@@ -50,13 +52,15 @@ export default function StatsSegments({ total, diff, data }: StatsSegmentsProps)
     label: segment.part > 10 ? `${segment.part}%` : undefined,
   }));
 
+  const notRecordedNb = useSelector((state: RootState) => state.audio.notRecordedNb)
+
   const descriptions = data.map((stat) => (
     <Box key={stat.label} sx={{ borderBottomColor: stat.color }} className={classes.stat}>
       <Text transform="uppercase" size="xs" color="dimmed" weight={700}>
         {stat.label}
       </Text>
       <Group position="apart" align="flex-end" spacing={0}>
-        <Text weight={700}>{stat.count}</Text>
+        <Text weight={700} color="dimmed">{stat.count} <small>audio(s)</small></Text>
         <Text color={stat.color} weight={700} size="sm" className={classes.statCount}>
           {stat.part}%
         </Text>
@@ -69,18 +73,14 @@ export default function StatsSegments({ total, diff, data }: StatsSegmentsProps)
       <Group position="apart">
         <Group align="flex-end" spacing="xs">
           <Text size="xl" weight={700}>
-            {total}
-          </Text>
-          <Text color="teal" className={classes.diff} size="sm" weight={700}>
-            <span>{diff}%</span>
-            <IconArrowUpRight size={16} style={{ marginBottom: 4 }} stroke={1.5} />
+            {diff}/<small>{total} enregistré(s)</small>
           </Text>
         </Group>
         <IconDeviceAnalytics size={20} className={classes.icon} stroke={1.5} />
       </Group>
 
       <Text color="dimmed" size="sm">
-        Page views compared to previous month
+        Il reste encore <b>{notRecordedNb}</b> audios à enregistrer
       </Text>
 
       <Progress

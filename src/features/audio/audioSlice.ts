@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { ApiClient } from '../../config/axios'
+import { getStatsInvestigated } from '../user/userSlice'
 
 interface State {
     loading: false
@@ -22,7 +23,6 @@ interface State {
         sourceLang: string
         targetLang: string
     } | null
-    userAudioCount: number
     notRecordedNb: number
     currentLangage: string
 }
@@ -34,7 +34,6 @@ let initialState: State = {
     dataAudioTarget: null,
     urlAudio: "",
     notRecordedNb: 0,
-    userAudioCount: 0,
     currentAudio: null,
     currentLangage: "source"
 }
@@ -52,7 +51,6 @@ export const audioSlice = createSlice({
             state.urlAudio = action.payload ? action.payload.url : null
         },
         setNotRecordedNb: (state, action) => { state.notRecordedNb = action.payload },
-        setUserAudioCount: (state, action) => { state.userAudioCount = action.payload },
         setCurrentAudio: (state, action) => { state.currentAudio = action.payload },
         setCurrentLangage: (state, action) => {
             state.currentLangage = action.payload
@@ -98,9 +96,10 @@ export const sendAudio = createAsyncThunk('audio/send',
             headers: {
                 "Content-type": "multipart/form-data"
             }
-        }).then(async ({ data: res }) => {
+        }).then(() => {
 
             dispatch(getNotRecordedNb())
+            dispatch(getStatsInvestigated())
             dispatch(setLoading(false))
 
         }).catch(err => {
@@ -123,5 +122,5 @@ export const getNewAudio = createAsyncThunk('audio/getNewAudio',
         })
     })
 
-export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, setNotRecordedNb, setUserAudioCount, setCurrentAudio } = audioSlice.actions
+export const { setLoading, setCurrentLangage, setDataAudioSource, setDataAudioTarget, setNotRecordedNb, setCurrentAudio } = audioSlice.actions
 export default audioSlice.reducer

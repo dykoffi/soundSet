@@ -8,28 +8,9 @@ import User from '../components/user';
 import { IconCheck, IconChecks, IconChevronsRight, IconLayoutGridAdd, IconUserPlus } from '@tabler/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../features/store';
-import { addInvestigated, getListInvestigated, setInvestigated, setPopup } from '../features/user/userSlice';
-import { getNewAudio, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
+import { addInvestigated, getListInvestigated, getStatsInvestigated, setInvestigated, setPopup } from '../features/user/userSlice';
+import { getNewAudio, getNotRecordedNb, sendAudio, setCurrentLangage, setDataAudioSource, setDataAudioTarget } from '../features/audio/audioSlice';
 import { AudioRecorder, useAudioRecorder } from 'react-audio-voice-recorder';
-
-let stats = {
-  total: "345,765",
-  diff: 18,
-  data: [
-    {
-      label: "Homme (34)",
-      count: "204,001",
-      part: 59,
-      color: "#47d6ab"
-    },
-    {
-      label: "Femme (12)",
-      count: "121,017",
-      part: 25,
-      color: "#03141a"
-    }
-  ]
-}
 
 export default function Participants() {
   const theme = useMantineTheme();
@@ -38,6 +19,7 @@ export default function Participants() {
   const listInvestigated: any[] = useSelector((state: RootState) => state.user.listInvestigated)
   const loading = useSelector((state: RootState) => state.user.loading)
   const popup = useSelector((state: RootState) => state.user.popup)
+  const stats = useSelector((state: RootState) => state.user.stats)
 
   const currentAudio = useSelector((state: RootState) => state.audio.currentAudio)
   const dataAudioSource = useSelector((state: RootState) => state.audio.dataAudioSource)
@@ -47,7 +29,6 @@ export default function Participants() {
 
 
   const recorderControls = useAudioRecorder()
-  const [opened, setopen] = useState(false)
   const dispatch = useDispatch()
   const [data, setdata] = useState({
     name: "",
@@ -83,6 +64,8 @@ export default function Participants() {
 
   useEffect(() => {
     dispatch(getListInvestigated())
+    dispatch(getStatsInvestigated())
+    dispatch(getNotRecordedNb())
   }, [])
 
 
@@ -116,7 +99,15 @@ export default function Participants() {
           <Grid.Col span={"content"}>
             <Tooltip label="Ajouter un participant">
               <ActionIcon>
-                <IconUserPlus onClick={() => dispatch(setPopup(true))} />
+                <IconUserPlus onClick={() => {
+                  setdata({
+                    name: "",
+                    year: 0,
+                    genre: "",
+                    town: ""
+                  })
+                  dispatch(setPopup(true))
+                }} />
               </ActionIcon>
             </Tooltip>
           </Grid.Col>
@@ -157,9 +148,7 @@ export default function Participants() {
             onClick={sendAudioData}
             rightIcon={<IconChecks />}
             disabled={!validAudio} size='md' color="teal.5">Envoyer</Button>
-          <Button rightIcon={
-            loading ? <Loader size={"sm"} variant="bars" color={"teal.4"} /> : <IconChevronsRight />
-          }
+          <Button rightIcon={<IconChevronsRight />}
             disabled={!investigated} size='md' variant='outline' color="teal.5" onClick={() => { dispatch(getNewAudio(Number(investigated))) }}>Passer</Button>
         </Group>
       </Stack>
@@ -171,12 +160,6 @@ export default function Participants() {
         overlayColor={theme.colors.gray[2]}
         onClose={() => {
           dispatch(setPopup(false))
-          setdata({
-            name: "",
-            year: 0,
-            genre: "",
-            town: ""
-          })
         }}
         overlayOpacity={0.55}
         overlayBlur={3}
